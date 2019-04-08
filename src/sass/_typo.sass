@@ -1,0 +1,56 @@
+@import "mixins"
+
+=h1
+  font-size: 80px
+=h2
+  font-size: 64px
+=h3
+  font-size: 48px
+
+body
+  +tt(r)
+  font-size: 16px
+  letter-spacing: 0.02em
+
+h1
+  +h1
+h2
+  +h2
+h3
+  +h3
+
+.t-h1
+  +tt(m)
+  +h1
+  letter-spacing: -0.02em
+
+.t-h2
+  +tt(r)
+  +h2
+  letter-spacing: 0.02em
+
+.t-h3
+  +tt(m)
+  +h3
+  letter-spacing: 0.02em
+
+.t-ttu
+  +tt(b)
+  font-size: 14px
+  letter-spacing: 0.24em
+  text-transform: uppercase
+
+.t-title
+  +pf(mi)
+  font-size: 14px
+  letter-spacing: 0.04em
+
+.t-quote-header
+  +pf(i)
+  font-size: 36px
+  letter-spacing: 0.02em
+
+.t-quote-body
+  +pf(r)
+  font-size: 36px
+  letter-spacing: 0.02em
