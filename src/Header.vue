@@ -1,10 +1,7 @@
 <template>
   <header class="header">
     <div class="container u-flex u-aic u-jcsb">
-      <router-link
-        class="t-ttu"
-        to="/"
-      >Nick Adams</router-link>
+      <router-link class="t-ttu" to="/">Nick Adams</router-link>
       <button class="menu-btn">
         <span class="menu-btn__circle"></span>
         <span class="menu-btn__circle"></span>
@@ -17,8 +14,8 @@
 
 <script>
 export default {
-  name: "Header"
-};
+  name: 'Header'
+}
 </script>
 
 <style lang="sass" scoped>

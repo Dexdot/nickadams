@@ -8,14 +8,14 @@
 
 <script>
 export default {
-  name: "CaseRow",
+  name: 'CaseRow',
   props: {
     content: Object
   },
   created() {
     // console.log(this.content);
   }
-};
+}
 </script>
 
 <style lang="sass" scoped>
