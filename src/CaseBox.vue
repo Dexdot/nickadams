@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      class="case-box"
-      :style="{ backgroundColor: content.color || '#DDDDDD' }"
-    >
+    <div class="case-box" :style="{ backgroundColor: color }">
       <template v-if="content.images.length > 1">
         <lory
           ref="slider"
@@ -54,7 +51,8 @@ export default {
     Item
   },
   props: {
-    content: Object
+    content: Object,
+    color: String
   },
   data: () => ({
     index: 0,
@@ -103,7 +101,7 @@ export default {
   object-fit: cover
 
 .case-box
-  margin-bottom: 40px
+  margin-bottom: gutters(1)
   padding: 10.4% 12.7%
 
 .case-box-shadow

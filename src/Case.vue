@@ -5,16 +5,12 @@
       <p>{{ project.subtitle }}</p>
 
       <img
-        class="case__cover"
+        class="case__img"
         :src="project.cover.fields.file.url"
         :alt="project.cover.fields.title"
       />
 
-      <ul class="case__team">
-        <li v-for="(item, i) in project.team" :key="i + project.slug">
-          {{ item }}
-        </li>
-      </ul>
+      <!-- client role date -->
 
       <ul class="case__content">
         <li v-for="(item, i) in content" :key="i + item.nodeType">
@@ -27,9 +23,58 @@
             :alt="item.data.target.fields.title"
           />
 
-          <CaseBox v-if="isBox(item)" :content="item.data.target.fields" />
+          <CaseBox
+            v-if="isBox(item)"
+            :content="item.data.target.fields"
+            :color="boxColor"
+          />
 
-          <CaseRow v-if="isRow(item)" :content="item.data.target.fields" />
+          <CaseRow
+            v-if="isRow(item)"
+            :content="item.data.target.fields"
+            :color="boxColor"
+          />
+        </li>
+      </ul>
+
+      <ul class="case__footer">
+        <li class="u-flex">
+          <div class="case__footer-col">
+            <b>Team</b>
+          </div>
+          <div class="case__footer-col">
+            <ul>
+              <li v-for="(item, i) in project.team" :key="i + project.slug">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="u-flex">
+          <div class="case__footer-col">
+            <b>Content</b>
+          </div>
+          <div class="case__footer-col">
+            <ul>
+              <li
+                v-for="(item, i) in project.contentAuthors"
+                :key="i + project.slug"
+              >
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="u-flex">
+          <div class="case__footer-col">
+            <b>Etalon</b>
+          </div>
+
+          <div class="case__footer-col">
+            <a :href="`https://${project.etalon}`" target="_blank">
+              {{ project.etalon }}
+            </a>
+          </div>
         </li>
       </ul>
     </article>
@@ -51,7 +96,8 @@ export default {
   },
   data: () => ({
     project: null,
-    content: null
+    content: null,
+    boxColor: '#DDDDDD'
   }),
   created() {
     // Get keys
@@ -67,13 +113,14 @@ export default {
         'fields.slug': this.$route.params.id
       })
       .then(({ items }) => {
+        // Project data
         this.project = items[0] ? items[0].fields : null
+
+        // Rich content
         this.content = this.project.content.content
-        // this.content.forEach(el => {
-        //   if (el.nodeType === "embedded-entry-block") {
-        //     console.log({ ...el.data.target.sys.contentType.sys });
-        //   }
-        // });
+
+        // Box color
+        if (this.project.boxColor) this.boxColor = this.project.boxColor
       })
   },
   methods: {
@@ -129,15 +176,38 @@ export default {
 .case p
   margin-bottom: 24px
 
-// Cover
-.case__cover
-  margin: 6.3% 0
-
 // Images
-.case__cover,
 .case__img
   display: block
   width: 100vw
-  margin-left: calc(-1 * #{mix(2)} - #{var(--unit)})
   height: auto
+  margin: 6.3% 0 6.3% calc(-1 * #{mix(2)} - #{var(--unit)})
+
+// Footer
+.case__footer > li
+  min-height: 7em
+  padding-top: 1.8em
+  padding-bottom: 1.4em
+
+  position: relative
+
+.case__footer > li::before
+  content: ''
+  position: absolute
+  bottom: 0
+  left: 0
+
+  width: 100%
+  height: 1px
+  background: var(--color-1)
+  opacity: 0.1
+
+.case__footer-col:first-child
+  margin-right: gutters(1)
+
+.case__footer-col
+  width: column-spans(4)
+
+.case__footer-col b
+  +tt(m)
 </style>
