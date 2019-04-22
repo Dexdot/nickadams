@@ -12,30 +12,45 @@
 
       <!-- client role date -->
 
-      <ul class="case__content">
-        <li v-for="(item, i) in content" :key="i + item.nodeType">
-          <p v-if="isText(item)" v-html="render(item)"></p>
+      <section>
+        <aside>
+          <b>Client</b>
+          <p>{{ project.client }}</p>
+          <b>Role</b>
+          <p>{{ project.role }}</p>
+          <b>Date</b>
+          <p>{{ project.date }}</p>
+          <template v-if="project.awards">
+            <b>Awards</b>
+            <p>{{ awards }}</p>
+          </template>
+        </aside>
 
-          <img
-            class="case__img"
-            v-if="isImage(item)"
-            :src="item.data.target.fields.file.url"
-            :alt="item.data.target.fields.title"
-          />
+        <ul class="case__content">
+          <li v-for="(item, i) in content" :key="i + item.nodeType">
+            <p v-if="isText(item)" v-html="render(item)"></p>
 
-          <CaseBox
-            v-if="isBox(item)"
-            :content="item.data.target.fields"
-            :color="boxColor"
-          />
+            <img
+              class="case__img"
+              v-if="isImage(item)"
+              :src="item.data.target.fields.file.url"
+              :alt="item.data.target.fields.title"
+            />
 
-          <CaseRow
-            v-if="isRow(item)"
-            :content="item.data.target.fields"
-            :color="boxColor"
-          />
-        </li>
-      </ul>
+            <CaseBox
+              v-if="isBox(item)"
+              :content="item.data.target.fields"
+              :color="boxColor"
+            />
+
+            <CaseRow
+              v-if="isRow(item)"
+              :content="item.data.target.fields"
+              :color="boxColor"
+            />
+          </li>
+        </ul>
+      </section>
 
       <ul class="case__footer">
         <li class="u-flex">
@@ -99,6 +114,16 @@ export default {
     content: null,
     boxColor: '#DDDDDD'
   }),
+  computed: {
+    awards() {
+      const result = this.project.awards.reduce((sum, cur, i, arr) => {
+        if (i === 1) return `${sum} / ${cur} / `
+        if (i === arr.length - 1) return `${sum + cur}`
+        return `${sum + cur} / `
+      })
+      return result
+    }
+  },
   created() {
     // Get keys
     const { space, accessToken } = this.$store.getters
@@ -149,6 +174,7 @@ export default {
   margin-right: auto
   width: column-spans(8)
   padding-top: 11.5%
+  padding-bottom: 10.5%
 
 // Title
 .case__title
@@ -210,4 +236,12 @@ export default {
 
 .case__footer-col b
   +tt(m)
+
+
+// Aside
+aside
+  max-width: 11em
+  float: left
+.case aside p
+  margin-bottom: 32px
 </style>

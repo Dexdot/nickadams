@@ -32,8 +32,8 @@
       </template>
 
       <img
-        class="case-box-shadow"
         v-else
+        class="case-box-shadow"
         :src="content.images[0].fields.file.url"
         :alt="content.images[0].fields.title"
       />
