@@ -104,12 +104,23 @@ export default {
   margin-bottom: gutters(1)
   padding: 10.4% 12.7%
 
+  @media (max-width: 900px)
+    margin-bottom: 16px
+
+  @media (max-width: 700px)
+    width: 100vw
+    margin-left: calc(-1 * var(--unit))
+    padding: 12.9% var(--unit)
+
 .case-box-shadow
   box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.15)
 
 .case-box-dots
   margin-left: -16px
   transform: translateY(3vw)
+
+  @media (max-width: 700px)
+    transform: translateY(5vw)
 
 .case-box-dots li
   margin-left: 16px
@@ -131,5 +142,6 @@ export default {
 img
   display: block
   max-width: 100%
+  width: 100%
   height: auto
 </style>

@@ -33,11 +33,32 @@ export default {
   margin-left: calc(#{gutters(1)} * -1)
   margin-bottom: gutters(1)
 
+  @media (max-width: 900px)
+    margin-left: -16px
+
+  @media (max-width: 700px)
+    width: 100vw
+    flex-direction: column
+    margin-left: calc(-1 * var(--unit))
+
 .case-row li
   margin-left: gutters(1)
 
+  @media (max-width: 900px)
+    margin-left: 16px
+.case-row li
+  @media (max-width: 700px)
+    margin-left: 0
+
+.case-row li:not(:last-child)
+  @media (max-width: 700px)
+    margin-bottom: 16px
+
 .case-box
   padding: 10.4% 12.7%
+
+  @media (max-width: 700px)
+    padding: 12.9% var(--unit)
 
 .case-box img
   box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.15)

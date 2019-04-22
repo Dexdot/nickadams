@@ -176,6 +176,18 @@ export default {
   padding-top: 11.5%
   padding-bottom: 10.5%
 
+  @media (max-width: 900px)
+    width: column-spans(10)
+
+  @media (max-width: 700px)
+    width: 100%
+    padding-left: var(--unit)
+    padding-right: var(--unit)
+
+    background: #fff
+    padding-top: 33%
+    padding-bottom: 35.8%
+
 // Title
 .case__title
   line-height: 1
@@ -191,12 +203,28 @@ export default {
     width: column-spans(4)
     margin-left: column-spans(4)
 
+    @media (max-width: 900px)
+      width: column-spans(5)
+      margin-left: column-spans(5)
+
+    @media (max-width: 700px)
+      margin-left: 0
+      width: 100%
+
 .case__content > li >
   h2, h3,
   ul, ol,
   a, p
     width: column-spans(4)
     margin-left: column-spans(4)
+
+    @media (max-width: 900px)
+      width: column-spans(5)
+      margin-left: column-spans(5)
+
+    @media (max-width: 700px)
+      margin-left: 0
+      width: 100%
 
 // Paragraph
 .case p
@@ -209,7 +237,18 @@ export default {
   height: auto
   margin: 6.3% 0 6.3% calc(-1 * #{mix(2)} - #{var(--unit)})
 
+  @media (max-width: 900px)
+    margin: 48px 0 48px calc(-1 * #{mix(1)} - #{var(--unit)})
+
+  @media (max-width: 700px)
+    object-fit: cover
+    height: 100vh
+    margin: 48px 0 48px calc(-1 * #{var(--unit)})
+
 // Footer
+.case__footer
+  padding-top: 4%
+
 .case__footer > li
   min-height: 7em
   padding-top: 1.8em
@@ -231,8 +270,28 @@ export default {
 .case__footer-col:first-child
   margin-right: gutters(1)
 
+  @media (max-width: 900px)
+    margin-right: 16px
+
+  @media (max-width: 700px)
+    margin-right: 0
+
 .case__footer-col
   width: column-spans(4)
+
+  @media (max-width: 900px)
+    width: column-spans(5)
+
+.case__footer-col:first-child
+  @media (max-width: 700px)
+    width: column-spans(3)
+
+.case__footer-col:last-child
+  @media (max-width: 700px)
+    padding-left: 56px
+    width: column-spans(9)
+  @media (max-width: 360px)
+    padding-left: 40px
 
 .case__footer-col b
   +tt(m)
@@ -242,6 +301,12 @@ export default {
 aside
   max-width: 11em
   float: left
+
+  @media (max-width: 900px)
+    margin-bottom: 80px
+    max-width: 80%
+    float: unset
+
 .case aside p
   margin-bottom: 32px
 </style>

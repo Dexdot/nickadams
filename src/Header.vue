@@ -24,7 +24,7 @@ export default {
   top: 6%
   left: 0
 
-  width: 100%
+  width: 100vw
 
 .menu-btn
   display: flex
