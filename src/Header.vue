@@ -20,6 +20,7 @@ export default {
 
 <style lang="sass" scoped>
 .header
+  z-index: 1
   position: fixed
   top: 6%
   left: 0
@@ -35,11 +36,14 @@ export default {
   margin-top: -4px
 
 .menu-btn__circle
-  background: var(--color-1)
+  background: var(--color-text-lt)
   border-radius: 50%
 
   width: 4px
   height: 4px
   margin-left: 4px
   margin-top: 4px
+
+.dark .menu-btn__circle
+  background: var(--color-text-dk)
 </style>

@@ -129,7 +129,7 @@ export default {
 
 .case-box-dot
   border-radius: 50%
-  background: var(--color-1)
+  background: var(--color-text-lt)
   opacity: 0.6
   transition: $trs
 
