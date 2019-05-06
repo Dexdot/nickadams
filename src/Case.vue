@@ -127,30 +127,33 @@ export default {
     }
   },
   created() {
-    // Get keys
-    const { space, accessToken } = this.$store.getters
-
-    // Client instance
-    const client = contentful.createClient({ accessToken, space })
-
-    // Get case by slug
-    client
-      .getEntries({
-        content_type: 'case',
-        'fields.slug': this.$route.params.id
-      })
-      .then(({ items }) => {
-        // Project data
-        this.project = items[0] ? items[0].fields : null
-
-        // Rich content
-        this.content = this.project.content.content
-
-        // Box color
-        if (this.project.boxColor) this.boxColor = this.project.boxColor
-      })
+    this.fetchCase()
   },
   methods: {
+    fetchCase() {
+      // Get keys
+      const { space, accessToken } = this.$store.getters
+
+      // Client instance
+      const client = contentful.createClient({ accessToken, space })
+
+      // Get case by slug
+      client
+        .getEntries({
+          content_type: 'case',
+          'fields.slug': this.$route.params.id
+        })
+        .then(({ items }) => {
+          // Project data
+          this.project = items[0] ? items[0].fields : null
+
+          // Rich content
+          this.content = this.project.content.content
+
+          // Box color
+          if (this.project.boxColor) this.boxColor = this.project.boxColor
+        })
+    },
     render: item => documentToHtmlString(item),
     isText: item => item.nodeType === 'paragraph',
     isImage: item => item.nodeType === 'embedded-asset-block',

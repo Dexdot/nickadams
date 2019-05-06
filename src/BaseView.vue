@@ -1,7 +1,7 @@
 <template>
   <div :class="['page', { dark: isDark }]">
     <Header />
-    <Scroll>
+    <Scroll @v-scroll="$emit('v-scroll', $event)">
       <slot></slot>
     </Scroll>
     <Toggler v-if="toggler" :dark="isDark" @click="toggle" />

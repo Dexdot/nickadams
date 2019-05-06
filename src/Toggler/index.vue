@@ -1,5 +1,5 @@
 <template>
-  <button class="toggler u-center" @click="$emit('click')">
+  <button :class="['toggler u-center', { visible }]" @click="$emit('click')">
     <svg
       width="16"
       height="16"
@@ -23,11 +23,39 @@ export default {
   name: 'Toggler',
   props: {
     dark: { type: Boolean, default: false }
+  },
+  data: () => ({
+    visible: false,
+    timeout: null
+  }),
+  mounted() {
+    this.mousemove()
+  },
+  methods: {
+    mousemove() {
+      window.addEventListener('mousemove', () => {
+        this.visible = true
+
+        clearTimeout(this.timeout)
+        this.timeout = setTimeout(() => {
+          this.visible = false
+        }, 500)
+      })
+    }
   }
 }
 </script>
 
 <style lang="sass" scoped>
+.toggler
+  transition: 0.25s ease
+  opacity: 0
+  // pointer-events: none
+
+.toggler.visible
+  opacity: 1
+  // pointer-events: auto
+
 .toggler svg
   stroke: var(--color-text-lt)
 
