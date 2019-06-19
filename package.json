@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^13.1.0",
+    "animejs": "^3.0.1",
+    "charming": "^2.2.5",
     "contentful": "^7.5.0",
     "core-js": "^2.6.5",
     "inobounce": "^0.1.6",

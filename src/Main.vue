@@ -1,14 +1,24 @@
 <template>
-  <base-view @v-scroll="scroll" toggler>
+  <base-view @v-scroll="onScroll" toggler>
     <h1
+      class="t-h1"
+      :style="{ transform: `translate3d(-50%, ${this.translate}px, 0)` }"
+      ref="title"
+    ></h1>
+    <!-- <h1
       :class="['t-h1', { visible: showTitle }]"
       :style="{ transform: `translate3d(-50%, ${this.translate}px, 0)` }"
       ref="title"
     >
-      <span v-for="(char, i) in chars" :key="char + i">{{ char }}</span>
-    </h1>
+      <span
+        v-for="(char, i) in chars"
+        :key="char + i"
+        :style="{ 'transition-delay': `${i * 0.02}s` }"
+        >{{ char }}</span
+      >
+    </h1> -->
 
-    <ul class="cases">
+    <!-- <ul class="cases">
       <li class="case" v-for="project in cases" :key="project.slug">
         <ul>
           <li v-for="img in project.covers" :key="img.fields.file.fileName">
@@ -38,12 +48,34 @@
           </li>
         </ul>
       </li>
+    </ul> -->
+
+    <ul class="cases">
+      <li class="case" v-for="project in cases" :key="project.slug">
+        <ul>
+          <li v-for="img in project.covers" :key="img.fields.file.fileName">
+            <router-link
+              class="img"
+              :to="`/${project.slug}`"
+              @mouseover.native="mouseover(project.title)"
+              @mouseout.native="mouseout"
+            >
+              <div class="img__i">
+                <img :src="img.fields.file.url" :alt="project.title" />
+              </div>
+            </router-link>
+          </li>
+        </ul>
+      </li>
     </ul>
   </base-view>
 </template>
 
 <script>
-import Vue from 'vue'
+import anime from 'animejs'
+import charming from 'charming'
+
+// import Vue from 'vue'
 const contentful = require('contentful')
 
 export default {
@@ -51,8 +83,6 @@ export default {
   data: () => ({
     cases: [],
     chars: [],
-    title: '',
-    showTitle: false,
     translate: 0
   }),
   created() {
@@ -80,17 +110,27 @@ export default {
         })
     },
     mouseover(title) {
-      this.chars = Array.from(title).map(c => c)
-      Vue.nextTick(() => {
-        console.log(this.$refs.title)
-        this.showTitle = true
-      })
+      this.$refs.title.innerHTML = title
+      charming(this.$refs.title)
+      this.showTitle()
     },
     mouseout() {
-      console.log('mouseout')
-      this.showTitle = false
+      this.showTitle(false)
     },
-    scroll(v) {
+    showTitle(show = true, cb) {
+      anime({
+        targets: this.$refs.title.querySelectorAll('span'),
+        opacity: show ? [0, 1] : [1, 0],
+        translateY: show ? ['40px', '0px'] : '0px',
+        easing: 'easeOutQuart',
+        duration: show ? 1000 : 600,
+        delay: show ? anime.stagger(20) : 0,
+        complete: () => {
+          if (cb) cb()
+        }
+      })
+    },
+    onScroll(v) {
       this.translate = v
     }
   }
@@ -126,52 +166,80 @@ h1
   left: 50vw
   margin-top: -0.5em
 
-  span
-    opacity: 0
-    transform: translate3d(0, 16px, 0)
-    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out
+  /deep/ span
+    min-width: 0.3em
+    display: inline-block
+    will-change: transform, opacity
 
-  &.visible span
-    opacity: 1
-    transform: translate3d(0, 0, 0)
 
-.decorator
-  position: absolute
-  top: -5px
-  left: -5px
-
-  width: calc(100% + 10px)
-  height: calc(100% + 10px)
-
-  pointer-events: none
-
-.decorator image
-  transform-origin: 50% 50%
-  transition: transform 1s cubic-bezier(.09,.25,.38,.99)
-
-.decorator rect
-  fill: none
-  stroke: var(--color-bg-lt)
-  stroke-width: 0
-  transition: stroke-width 1s cubic-bezier(.39,.575,.565,1)
-
-.dark .decorator rect
-  stroke: var(--color-bg-dk)
-
+/* FIRST VARIANT WITHOUT SVG */
 .img
+  transition: transform .5s cubic-bezier(.455,.03,.515,.955)
   display: block
   position: relative
+
+.img__i
+  position: absolute
+  top: 0
+  left: 0
+
+  width: 100%
+  height: 100%
   overflow: hidden
+  transform: scaleX(1)
 
-.img:hover .decorator rect
-  stroke-width: 10%
-  transition-duration: .5s
-  transition-delay: 0s
+.img img
+  width: 100%
+  height: 100%
+  object-fit: cover
+  transition: transform .5s cubic-bezier(.455,.03,.515,.955)
+  transform: scaleX(1)
 
-.img:hover .decorator image
-  transform: scale(1.1)
-  transition-duration: 0.5s
-  transition-delay: 0s
+.img:hover
+  transform: scale3d(.95,.95,1)
+  img
+    transform: scale3d(1.15,1.15,1)
+
+/* SECOND VARIANT WITH SVG */
+// .img
+//   transition: transform 1s cubic-bezier(.09,.25,.38,.99)
+//   display: block
+//   position: relative
+//   overflow: hidden
+
+// .img:hover .decorator rect
+//   stroke-width: 10%
+//   transition-duration: .5s
+//   transition-delay: 0s
+
+// .img:hover .decorator image
+//   transform: scale(1.1)
+//   transition-duration: 0.5s
+//   transition-delay: 0s
+
+// .decorator
+//   position: absolute
+//   top: -5px
+//   left: -5px
+
+//   width: calc(100% + 10px)
+//   height: calc(100% + 10px)
+
+//   pointer-events: none
+
+// .decorator image
+//   transform-origin: 50% 50%
+//   transition: transform 1s cubic-bezier(.09,.25,.38,.99)
+
+// .decorator rect
+//   fill: none
+//   stroke: var(--color-bg-lt)
+//   stroke-width: 0
+//   transition: stroke-width 1s cubic-bezier(.39,.575,.565,1)
+
+// .dark .decorator rect
+//   stroke: var(--color-bg-dk)
+
 
 .cases
   padding-top: 7.6%
