@@ -1,54 +1,10 @@
 <template>
-  <base-view @v-scroll="onScroll" toggler>
+  <div>
     <h1
       class="t-h1"
       :style="{ transform: `translate3d(-50%, ${this.translate}px, 0)` }"
       ref="title"
     ></h1>
-    <!-- <h1
-      :class="['t-h1', { visible: showTitle }]"
-      :style="{ transform: `translate3d(-50%, ${this.translate}px, 0)` }"
-      ref="title"
-    >
-      <span
-        v-for="(char, i) in chars"
-        :key="char + i"
-        :style="{ 'transition-delay': `${i * 0.02}s` }"
-        >{{ char }}</span
-      >
-    </h1> -->
-
-    <!-- <ul class="cases">
-      <li class="case" v-for="project in cases" :key="project.slug">
-        <ul>
-          <li v-for="img in project.covers" :key="img.fields.file.fileName">
-            <router-link
-              class="img"
-              :to="`/${project.slug}`"
-              @mouseover.native="mouseover(project.title)"
-              @mouseout.native="mouseout"
-            >
-              <svg
-                class="decorator"
-                :viewBox="
-                  `0 0 ${img.fields.file.details.image.width} ${
-                    img.fields.file.details.image.height
-                  }`
-                "
-                preserveAspectRatio="xMidYMid slice"
-              >
-                <image
-                  width="100%"
-                  height="100%"
-                  :xlink:href="img.fields.file.url"
-                />
-                <rect x="0" y="0" width="100%" height="100%"></rect>
-              </svg>
-            </router-link>
-          </li>
-        </ul>
-      </li>
-    </ul> -->
 
     <ul class="cases">
       <li class="case" v-for="project in cases" :key="project.slug">
@@ -68,14 +24,13 @@
         </ul>
       </li>
     </ul>
-  </base-view>
+  </div>
 </template>
 
 <script>
 import anime from 'animejs'
 import charming from 'charming'
 
-// import Vue from 'vue'
 const contentful = require('contentful')
 
 export default {
@@ -110,6 +65,7 @@ export default {
         })
     },
     mouseover(title) {
+      this.title = title
       this.$refs.title.innerHTML = title
       charming(this.$refs.title)
       this.showTitle()

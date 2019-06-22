@@ -1,101 +1,99 @@
 <template>
-  <base-view>
-    <main class="u-ovxh">
-      <article class="case" v-if="project">
-        <h1 class="case__title t-h3">{{ project.title }}</h1>
-        <p>{{ project.subtitle }}</p>
+  <main class="u-ovxh">
+    <article class="case" v-if="project">
+      <h1 class="case__title t-h3">{{ project.title }}</h1>
+      <p>{{ project.subtitle }}</p>
 
-        <img
-          class="case__img"
-          :src="project.cover.fields.file.url"
-          :alt="project.cover.fields.title"
-        />
+      <img
+        class="case__img"
+        :src="project.cover.fields.file.url"
+        :alt="project.cover.fields.title"
+      />
 
-        <!-- client role date -->
+      <!-- client role date -->
 
-        <section>
-          <aside>
-            <b>Client</b>
-            <p>{{ project.client }}</p>
-            <b>Role</b>
-            <p>{{ project.role }}</p>
-            <b>Date</b>
-            <p>{{ project.date }}</p>
-            <template v-if="project.awards">
-              <b>Awards</b>
-              <p>{{ awards }}</p>
-            </template>
-          </aside>
+      <section>
+        <aside>
+          <b>Client</b>
+          <p>{{ project.client }}</p>
+          <b>Role</b>
+          <p>{{ project.role }}</p>
+          <b>Date</b>
+          <p>{{ project.date }}</p>
+          <template v-if="project.awards">
+            <b>Awards</b>
+            <p>{{ awards }}</p>
+          </template>
+        </aside>
 
-          <ul class="case__content">
-            <li v-for="(item, i) in content" :key="i + item.nodeType">
-              <p v-if="isText(item)" v-html="render(item)"></p>
+        <ul class="case__content">
+          <li v-for="(item, i) in content" :key="i + item.nodeType">
+            <p v-if="isText(item)" v-html="render(item)"></p>
 
-              <img
-                class="case__img"
-                v-if="isImage(item)"
-                :src="item.data.target.fields.file.url"
-                :alt="item.data.target.fields.title"
-              />
+            <img
+              class="case__img"
+              v-if="isImage(item)"
+              :src="item.data.target.fields.file.url"
+              :alt="item.data.target.fields.title"
+            />
 
-              <CaseBox
-                v-if="isBox(item)"
-                :content="item.data.target.fields"
-                :color="boxColor"
-              />
+            <CaseBox
+              v-if="isBox(item)"
+              :content="item.data.target.fields"
+              :color="boxColor"
+            />
 
-              <CaseRow
-                v-if="isRow(item)"
-                :content="item.data.target.fields"
-                :color="boxColor"
-              />
-            </li>
-          </ul>
-        </section>
-
-        <ul class="case__footer">
-          <li class="u-flex">
-            <div class="case__footer-col">
-              <b>Team</b>
-            </div>
-            <div class="case__footer-col">
-              <ul>
-                <li v-for="(item, i) in project.team" :key="i + project.slug">
-                  {{ item }}
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="u-flex">
-            <div class="case__footer-col">
-              <b>Content</b>
-            </div>
-            <div class="case__footer-col">
-              <ul>
-                <li
-                  v-for="(item, i) in project.contentAuthors"
-                  :key="i + project.slug"
-                >
-                  {{ item }}
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="u-flex">
-            <div class="case__footer-col">
-              <b>Etalon</b>
-            </div>
-
-            <div class="case__footer-col">
-              <a :href="`https://${project.etalon}`" target="_blank">
-                {{ project.etalon }}
-              </a>
-            </div>
+            <CaseRow
+              v-if="isRow(item)"
+              :content="item.data.target.fields"
+              :color="boxColor"
+            />
           </li>
         </ul>
-      </article>
-    </main>
-  </base-view>
+      </section>
+
+      <ul class="case__footer">
+        <li class="u-flex">
+          <div class="case__footer-col">
+            <b>Team</b>
+          </div>
+          <div class="case__footer-col">
+            <ul>
+              <li v-for="(item, i) in project.team" :key="i + project.slug">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="u-flex">
+          <div class="case__footer-col">
+            <b>Content</b>
+          </div>
+          <div class="case__footer-col">
+            <ul>
+              <li
+                v-for="(item, i) in project.contentAuthors"
+                :key="i + project.slug"
+              >
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="u-flex">
+          <div class="case__footer-col">
+            <b>Etalon</b>
+          </div>
+
+          <div class="case__footer-col">
+            <a :href="`https://${project.etalon}`" target="_blank">
+              {{ project.etalon }}
+            </a>
+          </div>
+        </li>
+      </ul>
+    </article>
+  </main>
 </template>
 
 <script>
