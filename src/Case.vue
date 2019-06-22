@@ -12,8 +12,8 @@
 
       <!-- client role date -->
 
-      <section>
-        <aside>
+      <section :style="[{ 'min-height': `${asideHeight}px` }]">
+        <aside ref="aside">
           <b>Client</b>
           <p>{{ project.client }}</p>
           <b>Role</b>
@@ -99,6 +99,7 @@
 <script>
 import CaseRow from '@/CaseRow'
 import CaseBox from '@/CaseBox'
+import loop from '@/scripts/loop'
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
@@ -112,7 +113,8 @@ export default {
   data: () => ({
     project: null,
     content: null,
-    boxColor: '#DDDDDD'
+    boxColor: '#DDDDDD',
+    asideHeight: 100
   }),
   computed: {
     awards() {
@@ -127,7 +129,13 @@ export default {
   created() {
     this.fetchCase()
   },
+  destroyed() {
+    loop.remove(this.setAsideHeight.bind(this), 'setAsideHeight')
+  },
   methods: {
+    setAsideHeight() {
+      if (this.$refs.aside) this.asideHeight = this.$refs.aside.offsetHeight
+    },
     fetchCase() {
       // Get keys
       const { space, accessToken } = this.$store.getters
@@ -150,6 +158,8 @@ export default {
 
           // Box color
           if (this.project.boxColor) this.boxColor = this.project.boxColor
+
+          loop.add(this.setAsideHeight.bind(this), 'setAsideHeight')
         })
     },
     render: item => documentToHtmlString(item),

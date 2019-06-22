@@ -8,7 +8,7 @@
         ref="inner"
         :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
       >
-        <router-view />
+        <router-view :scroll="translate" />
       </div>
     </div>
 
@@ -80,7 +80,6 @@ export default {
     checkSmooth() {
       if (Math.round(this.scroll) !== Math.round(this.translate)) {
         this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
-        this.$emit('v-scroll', this.translate)
       }
     }
   },

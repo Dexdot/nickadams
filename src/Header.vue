@@ -27,6 +27,9 @@ export default {
 
   width: 100vw
 
+  @media (max-width: 500px)
+    top: 32px
+
 .menu-btn
   display: flex
   flex-wrap: wrap
