@@ -1,5 +1,5 @@
 <template>
-  <button :class="['toggler u-center', { visible }]" @click="$emit('click')">
+  <button :class="['toggler u-center', { visible }]" @click="onClick">
     <svg
       width="16"
       height="16"
@@ -21,26 +21,29 @@
 <script>
 export default {
   name: 'Toggler',
-  props: {
-    dark: { type: Boolean, default: false }
-  },
   data: () => ({
+    dark: false,
     visible: false,
     timeout: null
   }),
   mounted() {
-    this.mousemove()
+    window.addEventListener('mousemove', this.mousemove.bind(this))
+  },
+  destroyed() {
+    window.removeEventListener('mousemove', this.mousemove.bind(this))
   },
   methods: {
+    onClick() {
+      this.$emit('click')
+      this.dark = !this.dark
+    },
     mousemove() {
-      window.addEventListener('mousemove', () => {
-        this.visible = true
+      this.visible = true
 
-        clearTimeout(this.timeout)
-        this.timeout = setTimeout(() => {
-          this.visible = false
-        }, 500)
-      })
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        this.visible = false
+      }, 500)
     }
   }
 }
@@ -48,13 +51,13 @@ export default {
 
 <style lang="sass" scoped>
 .toggler
-  transition: 0.25s ease
+  transition: opacity 0.25s ease
   opacity: 0
-  // pointer-events: none
+  pointer-events: none
 
 .toggler.visible
   opacity: 1
-  // pointer-events: auto
+  pointer-events: auto
 
 .toggler svg
   stroke: var(--color-text-lt)
@@ -64,7 +67,7 @@ export default {
 
 .toggler
   position: fixed
-  bottom: 6%
+  top: 92vh
   right: var(--unit)
 
   width: 16px

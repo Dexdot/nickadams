@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="['page', { dark: isDark }]">
+  <div id="app" class="page">
     <Header />
 
     <div class="scroll-container" ref="container">
@@ -11,18 +11,14 @@
         <router-view :scroll="translate" />
       </div>
     </div>
-
-    <Toggler v-if="toggler" :dark="isDark" @click="toggle" />
   </div>
 </template>
 
 <script>
-import Header from '@/Header'
-import Toggler from '@/Toggler'
-
 import VirtualScroll from 'virtual-scroll'
 import inobounce from 'inobounce'
 import loop from '@/scripts/loop'
+import Header from '@/Header'
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
@@ -30,23 +26,13 @@ const lerp = (a, b, n) => (1 - n) * a + n * b
 export default {
   name: 'App',
   components: {
-    Header,
-    Toggler
-  },
-  props: {
-    dark: { type: Boolean, default: false },
-    toggler: { type: Boolean, default: false }
+    Header
   },
   data: () => ({
-    isDark: false,
     scroll: 0,
     translate: 0,
     vs: null
   }),
-  created() {
-    // Set data from props
-    this.isDark = this.dark
-  },
   mounted() {
     loop.start()
 
@@ -66,9 +52,6 @@ export default {
     loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
   },
   methods: {
-    toggle() {
-      this.isDark = !this.isDark
-    },
     onScroll(e) {
       const scroll = this.scroll + -1 * e.deltaY
 
@@ -101,9 +84,7 @@ export default {
 </style>
 
 <style lang="sass" scoped>
-.page:not(.dark)
-  transition: background 0.25s ease-in-out
-
+.page
   color: var(--color-text-lt)
   background: var(--color-bg-lt)
 
@@ -113,19 +94,6 @@ export default {
     &:active,
     &:focus
       color: var(--color-text-lt)
-
-.page.dark
-  transition: background 0.25s ease-in-out
-
-  color: var(--color-text-dk)
-  background: var(--color-bg-dk)
-
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: var(--color-text-dk)
 
 .scroll-container
   width: 100vw

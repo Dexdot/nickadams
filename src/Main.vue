@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="['main', { dark: isDark }]">
     <h1
       class="t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
@@ -24,17 +24,26 @@
         </ul>
       </li>
     </ul>
+
+    <Toggler
+      @click="toggleDarkMode"
+      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+    />
   </div>
 </template>
 
 <script>
 import anime from 'animejs'
 import charming from 'charming'
+import Toggler from '@/Toggler'
 
 const contentful = require('contentful')
 
 export default {
   name: 'Main',
+  components: {
+    Toggler
+  },
   props: {
     scroll: {
       type: Number
@@ -42,7 +51,8 @@ export default {
   },
   data: () => ({
     cases: [],
-    chars: []
+    chars: [],
+    isDark: false
   }),
   created() {
     this.fetchCases()
@@ -89,6 +99,9 @@ export default {
           if (cb) cb()
         }
       })
+    },
+    toggleDarkMode() {
+      this.isDark = !this.isDark
     }
   }
 }
@@ -158,6 +171,32 @@ $xl-h: var(--xl-h)
 $xxl-w: var(--xxl-w)
 
 $mob-mb: 28%
+
+.main:not(.dark)
+  transition: background 0.25s ease-in-out
+
+  color: var(--color-text-lt)
+  background: var(--color-bg-lt)
+
+  /deep/ a
+    &,
+    &:visited,
+    &:active,
+    &:focus
+      color: var(--color-text-lt)
+
+.main.dark
+  transition: background 0.25s ease-in-out
+
+  color: var(--color-text-dk)
+  background: var(--color-bg-dk)
+
+  /deep/ a
+    &,
+    &:visited,
+    &:active,
+    &:focus
+      color: var(--color-text-dk)
 
 h1
   pointer-events: none
