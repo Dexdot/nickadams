@@ -1,5 +1,11 @@
 <template>
   <div :class="['main', { dark: isDark }]">
+    <div
+      class="cover"
+      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+    >
+      <div class="cover__inner" ref="cover"></div>
+    </div>
     <h1
       class="t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
@@ -57,6 +63,9 @@ export default {
   created() {
     this.fetchCases()
   },
+  mounted() {
+    this.enterAnimation()
+  },
   methods: {
     fetchCases() {
       // Get keys
@@ -102,8 +111,23 @@ export default {
         }
       })
     },
+    enterAnimation() {
+      anime({
+        targets: this.$refs.cover,
+        translateY: ['0%', '-100%'],
+        duration: 1800,
+        easing: 'easeInOutCirc'
+      })
+      anime({
+        targets: this.$el,
+        translateY: ['200px', '0px'],
+        duration: 1800,
+        easing: 'easeInOutCirc'
+      })
+    },
     toggleDarkMode() {
       this.isDark = !this.isDark
+      this.$emit('toggle-dark', this.isDark)
     }
   }
 }
@@ -173,6 +197,24 @@ $xl-h: var(--xl-h)
 $xxl-w: var(--xxl-w)
 
 $mob-mb: 28%
+
+.cover
+  z-index: 3
+  position: fixed
+  top: -200px
+  left: 0
+  width: 100vw
+  height: calc(100vh + 200px)
+  pointer-events: none
+
+.cover__inner
+  width: 100vw
+  height: calc(100vh + 200px)
+  background: #000
+
+.main,
+.cover__inner
+  will-change: transform
 
 .main:not(.dark)
   transition: background 0.25s ease-in-out

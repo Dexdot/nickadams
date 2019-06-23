@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header :class="['header', { dark }]">
     <div class="container u-flex u-aic u-jcsb">
       <router-link class="t-ttu" to="/">Nick Adams</router-link>
       <button class="menu-btn">
@@ -14,7 +14,10 @@
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  props: {
+    dark: { type: Boolean, default: false }
+  }
 }
 </script>
 
@@ -47,6 +50,16 @@ export default {
   margin-left: 4px
   margin-top: 4px
 
-.dark .menu-btn__circle
-  background: var(--color-text-dk)
+.page .dark
+  color: var(--color-text-dk)
+
+  .menu-btn__circle
+    background: var(--color-text-dk)
+
+  /deep/ a
+    &,
+    &:visited,
+    &:active,
+    &:focus
+      color: var(--color-text-dk)
 </style>

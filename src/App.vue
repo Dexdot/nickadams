@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="page">
-    <Header />
+    <Header :dark="isDark" />
 
     <div class="scroll-container" ref="container">
       <div
@@ -8,7 +8,7 @@
         ref="inner"
         :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
       >
-        <router-view :scroll="translate" />
+        <router-view :scroll="translate" @toggle-dark="onToggle" />
       </div>
     </div>
   </div>
@@ -29,6 +29,7 @@ export default {
     Header
   },
   data: () => ({
+    isDark: false,
     scroll: 0,
     translate: 0,
     vs: null
@@ -52,6 +53,9 @@ export default {
     loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
   },
   methods: {
+    onToggle(isDark) {
+      this.isDark = isDark
+    },
     onScroll(e) {
       const scroll = this.scroll + -1 * e.deltaY
 
