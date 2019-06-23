@@ -88,6 +88,8 @@ export default {
       this.showTitle(false)
     },
     showTitle(show = true, cb) {
+      anime.remove(this.$refs.title.querySelectorAll('span'))
+
       anime({
         targets: this.$refs.title.querySelectorAll('span'),
         opacity: show ? [0, 1] : [1, 0],
