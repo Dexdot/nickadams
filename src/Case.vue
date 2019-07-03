@@ -27,7 +27,15 @@
         </aside>
 
         <ul class="case__content">
-          <li v-for="(item, i) in content" :key="i + item.nodeType">
+          <li
+            v-for="(item, i) in content"
+            :key="i + item.nodeType"
+            :class="{
+              case__text: isText(item),
+              case__box: isBox(item),
+              case__row: isRow(item)
+            }"
+          >
             <p v-if="isText(item)" v-html="render(item)"></p>
 
             <img
@@ -265,6 +273,9 @@ export default {
   &:focus
     color: var(--color-text-lt)
 
+.case__text + .case__box,
+.case__text + .case__row
+  margin-top: 8.3%
 
 // Paragraph
 .case p
@@ -275,7 +286,8 @@ export default {
   display: block
   width: 100vw
   height: auto
-  margin: 6.3% 0 6.3% calc(-1 * #{mix(2)} - #{var(--unit)})
+  // margin: 6.3% 0 6.3% calc(-1 * #{mix(2)} - #{var(--unit)})
+  margin: 10.4% 0 10.4% calc(-1 * #{mix(2)} - #{var(--unit)})
 
   @media (max-width: 900px)
     margin: 48px 0 48px calc(-1 * #{mix(1)} - #{var(--unit)})

@@ -1,5 +1,6 @@
 <template>
-  <div :class="['main', { dark: isDark }]">
+  <!-- <div :class="['main', { dark: isDark }]"> -->
+  <main :class="['main', { dark: isDark }]">
     <div
       class="cover"
       :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
@@ -18,7 +19,7 @@
           <li v-for="img in project.covers" :key="img.fields.file.fileName">
             <router-link
               class="img"
-              :to="`/${project.slug}`"
+              :to="`/case/${project.slug}`"
               @mouseover.native="mouseover(project.title)"
               @mouseout.native="mouseout"
             >
@@ -35,7 +36,8 @@
       @click="toggleDarkMode"
       :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
     />
-  </div>
+  </main>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -65,6 +67,9 @@ export default {
   },
   mounted() {
     this.enterAnimation()
+  },
+  destroyed() {
+    this.$emit('toggle-dark', false)
   },
   methods: {
     fetchCases() {

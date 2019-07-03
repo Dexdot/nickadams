@@ -13,9 +13,14 @@ export default new Router({
       component: () => import('./Main.vue')
     },
     {
-      path: '/:id',
+      path: '/case/:id',
       name: 'case',
       component: () => import('./Case.vue')
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('./About/index.vue')
     }
   ]
 })
