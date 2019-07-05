@@ -81,7 +81,7 @@
         :alt="content.mediaBig.fileName"
       />
 
-      <h1 class="about__title t-h3">
+      <h1 class="about__title">
         <span>No one there</span><span>get back</span>
       </h1>
     </figure>
@@ -144,10 +144,6 @@ export default {
             ...fields.mediaBig.fields.file,
             type: fields.mediaBig.fields.file.contentType.split('/')[0]
           }
-
-          console.log({
-            ...this.content
-          })
         })
     },
     render: item => documentToHtmlString(item)
@@ -166,6 +162,14 @@ export default {
   color: var(--color-text-dk)
   background: var(--color-bg-dk)
 
+  @media (max-width: 800px) and (min-height: 801px)
+    padding-top: 240px
+    padding-bottom: 320px
+
+  @media (max-width: 800px) and (max-height: 800px)
+    padding-top: 36vh
+    padding-bottom: 48vh
+
   /deep/ a
     &,
     &:visited,
@@ -177,15 +181,27 @@ export default {
   padding-left: mix(3)
   margin-bottom: 16%
 
+  @media (max-width: 800px)
+    padding-left: 0
+    flex-direction: column
+    margin-bottom: 80px
+
 .about__text
   width: column-spans(3)
   line-height: 1.625
+
+  @media (max-width: 800px)
+    width: 100%
+    margin-bottom: 96px
 
 .about__text p
   margin-bottom: 24px
 
 .about__contact
   margin-left: gutters(1)
+
+  @media (max-width: 800px)
+    margin: 0
 
 .about__contact ul
   padding-top: 24px
@@ -198,13 +214,31 @@ export default {
   margin-left: calc(#{gutters(1)} * -1)
   margin-bottom: 11.4%
 
+  @media (max-width: 800px)
+    padding: 0
+    margin: 0
+    flex-direction: column
+
 .about__list > li
   margin-left: gutters(1)
+
+  @media (max-width: 800px)
+    margin-left: 0
+    margin-bottom: 104px
+    width: 100%
+
+.about__list > li:nth-child(even) .about__img
+  @media (max-width: 800px)
+    margin-left: auto
 
 .about__img
   position: relative
   width: column-spans(3)
   padding-bottom: 146.37%
+
+  @media (max-width: 800px)
+    width: 58.6vw
+    padding-bottom: 103%
 
 .about__img video,
 .about__img img
@@ -221,6 +255,11 @@ export default {
   width: calc(#{var(--unit)} + #{column-spans(7)})
   padding-bottom: 40.917%
   margin-left: calc(-1 * var(--unit))
+
+  @media (max-width: 800px)
+    margin-left: calc(-1 * var(--unit))
+    width: 91.5vw
+    padding-bottom: 72%
 
 .about__big img
   position: absolute
@@ -244,6 +283,16 @@ export default {
   text-align: right
   text-transform: uppercase
   font-weight: 400
+  +yo('font-size', (375px: 18px, 1920px: 48px))
+
+  @media (max-width: 800px)
+    left: unset
+    right: 0
+    top: calc(100% + var(--unit))
+    transform: rotate(-180deg)
+
+    white-space: nowrap
+
 
 .sign
   margin-top: 24px
