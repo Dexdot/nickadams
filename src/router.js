@@ -10,17 +10,22 @@ export default new Router({
     {
       path: '/',
       name: 'main',
-      component: () => import('./Main.vue')
+      component: () => import('@/Main.vue')
     },
     {
       path: '/case/:id',
       name: 'case',
-      component: () => import('./Case.vue')
+      component: () => import('@/Case.vue')
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('./About/index.vue')
+      component: () => import('@/About/index.vue')
+    },
+    {
+      path: '/vision',
+      name: 'vision',
+      component: () => import('@/Vision.vue')
     }
   ]
 })
