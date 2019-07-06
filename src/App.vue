@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="page">
-    <Header :dark="isDark" />
+    <Header :dark="isDark" @menu-btn-click="onMenuBtnClick" />
+    <Menu :active="isMenuActive" />
 
     <div class="scroll-container" ref="container">
       <div
@@ -19,16 +20,20 @@ import VirtualScroll from 'virtual-scroll'
 import inobounce from 'inobounce'
 import loop from '@/scripts/loop'
 import Header from '@/Header'
+import Menu from '@/Menu'
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
+let isDark
 
 export default {
   name: 'App',
   components: {
-    Header
+    Header,
+    Menu
   },
   data: () => ({
+    isMenuActive: false,
     isDark: false,
     scroll: 0,
     translate: 0,
@@ -53,8 +58,14 @@ export default {
     loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
   },
   methods: {
-    onToggle(isDark) {
-      this.isDark = isDark
+    onMenuBtnClick() {
+      if (!this.isMenuActive) isDark = this.isDark
+
+      this.isMenuActive = !this.isMenuActive
+      this.isDark = this.isMenuActive ? this.isMenuActive : isDark
+    },
+    onToggle(v) {
+      this.isDark = v
     },
     onScroll(e) {
       const scroll = this.scroll + -1 * e.deltaY
@@ -73,6 +84,7 @@ export default {
   watch: {
     $route() {
       this.scroll = 0
+      this.isMenuActive = false
     }
   }
 }
