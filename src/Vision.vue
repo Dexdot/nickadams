@@ -1,24 +1,32 @@
 <template>
-  <main class="vision">
-    <div class="vision-container u-center">
-      <p
-        class="t-quote-body"
-        v-for="(p, i) in text"
-        :key="i"
-        v-html="render(p)"
-      ></p>
-    </div>
+  <main class="vision" @click="onClick">
+    <section class="vision-container u-center">
+      <article class="quotes" ref="quotes">
+        <p
+          class="t-quote-body"
+          v-html="render(el)"
+          v-for="(el, i) in slides[activeSlide]"
+          :key="i"
+        ></p>
+      </article>
+    </section>
   </main>
 </template>
 
 <script>
+// 1. Фетчим текст
+// 2. Разбиваем его на слайды
+// 3. Показываем текст из блюра
+// 4. По клику переключаем слайд, анимаха блюром
+
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
 export default {
   name: 'Vision',
   data: () => ({
-    text: []
+    slides: [],
+    activeSlide: 0
   }),
   created() {
     this.fetchVision()
@@ -28,6 +36,7 @@ export default {
     this.$emit('toggle-dark', false)
   },
   methods: {
+    render: item => documentToHtmlString(item),
     fetchVision() {
       // Get keys
       const { space, accessToken } = this.$store.getters
@@ -42,18 +51,60 @@ export default {
         })
         .then(({ items }) => {
           const { fields } = items[0]
-
-          // Email
-          this.text.push(fields.text)
+          this.slides = [...this.getSlides(fields)]
 
           this.$nextTick(() => {
             setTimeout(() => {
-              this.$el.querySelector('.t-quote-body').classList.add('blur')
+              this.$refs.quotes.classList.add('blur')
             }, 200)
+
+            setTimeout(() => {
+              this.$refs.quotes.classList.add('is-faster')
+            }, 2200)
           })
         })
     },
-    render: item => documentToHtmlString(item)
+    getSlides(fields) {
+      let counter = 0
+      const slides = []
+
+      fields.text.content.forEach(field => {
+        if (field.nodeType !== 'hr') {
+          const slide = slides[counter]
+
+          if (Array.isArray(slide)) {
+            slide.push(field)
+          } else {
+            slides[counter] = []
+            slides[counter].push(field)
+          }
+        } else {
+          counter++
+        }
+      })
+
+      return slides
+    },
+    onClick() {
+      this.$refs.quotes.classList.remove('blur')
+
+      this.$refs.quotes.addEventListener('transitionend', this.onTransitionEnd)
+    },
+    onTransitionEnd({ propertyName }) {
+      if (propertyName !== 'opacity') return false
+
+      if (this.activeSlide === this.slides.length - 1) {
+        this.activeSlide = 0
+      } else {
+        this.activeSlide++
+      }
+      this.$refs.quotes.classList.add('blur')
+
+      this.$refs.quotes.removeEventListener(
+        'transitionend',
+        this.onTransitionEnd
+      )
+    }
   }
 }
 </script>
@@ -76,6 +127,7 @@ export default {
   min-height: 100vh
   width: 100vw
   overflow: hidden
+  flex-direction: column
 
 .vision-container p
   line-height: 1.4444
@@ -92,14 +144,16 @@ export default {
 .vision-container /deep/ i
   +pf(i)
 
-// .blur
-.t-quote-body
+.quotes
   color: transparent
   text-shadow: 0px 0px 15px #fff
   opacity: 0
   transition: 2s
 
-.t-quote-body.blur
+.quotes.blur
   text-shadow: 0px 0px 0px #fff
   opacity: 1
+
+.quotes.is-faster
+  transition: 1s
 </style>

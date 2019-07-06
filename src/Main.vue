@@ -528,5 +528,4 @@ h1
     @media (max-width: 500px)
       width: 57.6vw
       padding-bottom: 74.67%
-
 </style>
