@@ -103,11 +103,8 @@ export default {
     }
   }),
   created() {
-    this.fetchAbout()
     this.$emit('toggle-dark', true)
-  },
-  destroyed() {
-    this.$emit('toggle-dark', false)
+    this.fetchAbout()
   },
   methods: {
     fetchAbout() {
@@ -283,7 +280,7 @@ export default {
   text-align: right
   text-transform: uppercase
   font-weight: 400
-  +yo('font-size', (375px: 18px, 1920px: 48px))
+  +yo('font-size', (375px: 18px, 1920px: 48px, 2550px: 64px))
 
   @media (max-width: 800px)
     left: unset

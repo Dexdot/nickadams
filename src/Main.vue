@@ -64,12 +64,10 @@ export default {
   }),
   created() {
     this.fetchCases()
+    this.$emit('toggle-dark', false)
   },
   mounted() {
     this.enterAnimation()
-  },
-  destroyed() {
-    this.$emit('toggle-dark', false)
   },
   methods: {
     fetchCases() {

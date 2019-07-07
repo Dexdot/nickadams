@@ -32,9 +32,6 @@ export default {
     this.fetchVision()
     this.$emit('toggle-dark', true)
   },
-  destroyed() {
-    this.$emit('toggle-dark', false)
-  },
   methods: {
     render: item => documentToHtmlString(item),
     fetchVision() {
