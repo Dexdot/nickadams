@@ -7,16 +7,12 @@
 <script>
 import anime from 'animejs'
 import charming from 'charming'
-
-const isTouchDevice = () =>
-  'ontouchstart' in window ||
-  navigator.MaxTouchPoints > 0 ||
-  navigator.msMaxTouchPoints > 0
+import { isTouchDevice } from '@/scripts/detect'
 
 export default {
   name: 'MenuLink',
   props: {
-    to: { type: String }
+    to: { type: [String, Object] }
   },
   mounted() {
     charming(this.$el)

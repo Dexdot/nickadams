@@ -10,7 +10,12 @@ export default new Router({
     {
       path: '/',
       name: 'main',
-      component: () => import('@/Main.vue')
+      component: () => import('@/Index.vue')
+    },
+    {
+      path: '/black',
+      name: 'black',
+      component: () => import('@/Black.vue')
     },
     {
       path: '/case/:id',

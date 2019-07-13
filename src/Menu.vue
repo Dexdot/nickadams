@@ -5,10 +5,10 @@
 
       <nav class="menu__nav">
         <ul>
-          <li><MenuLink :to="'/'">Index</MenuLink></li>
-          <li><MenuLink :to="'/about'">About</MenuLink></li>
-          <li><MenuLink :to="'/vision'">Vision</MenuLink></li>
-          <li><MenuLink :to="'/'">Black</MenuLink></li>
+          <li><MenuLink to="/">Index</MenuLink></li>
+          <li><MenuLink to="/about">About</MenuLink></li>
+          <li><MenuLink to="/vision">Vision</MenuLink></li>
+          <li><MenuLink to="/black">Black</MenuLink></li>
         </ul>
       </nav>
 
@@ -150,6 +150,8 @@ export default {
 
   width: 100vw
   height: 100vh
+  height: calc(var(--vh, 1vh) * 100)
+
 
 
 // Overlay
@@ -160,6 +162,7 @@ export default {
   left: 0
   width: 100vw
   height: 100vh
+  height: calc(var(--vh, 1vh) * 100)
 
 .menu__nav
   z-index: 1
@@ -204,4 +207,26 @@ export default {
     @media (max-width: 500px)
       font-size: 14px
 
+.menu__nav .menu__link,
+.menu__social a
+  transition: 0.25s ease
+
+.menu__nav .menu__link:not(.router-link-exact-active)
+  opacity: 0.3
+
+.menu__nav .menu__link.router-link-exact-active
+  opacity: 1
+
+.menu__nav:hover
+  .menu__link:not(.router-link-exact-active),
+  .menu__link.router-link-exact-active
+    opacity: 0.3
+
+.menu__nav
+  .menu__link:not(.router-link-exact-active):hover,
+  .menu__link.router-link-exact-active:hover
+    opacity: 1
+
+.menu__social a:hover
+  opacity: 1
 </style>

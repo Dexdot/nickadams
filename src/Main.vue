@@ -1,5 +1,4 @@
 <template>
-  <!-- <div :class="['main', { dark: isDark }]"> -->
   <main :class="['main', { dark: isDark }]">
     <div
       class="cover"
@@ -16,11 +15,14 @@
     <ul class="cases">
       <li class="case" v-for="project in cases" :key="project.slug">
         <ul>
-          <li v-for="img in project.covers" :key="img.fields.file.fileName">
+          <li
+            v-for="(img, i) in project.covers"
+            :key="img.fields.file.fileName"
+          >
             <router-link
               class="img"
               :to="`/case/${project.slug}`"
-              @mouseover.native="mouseover(project.title)"
+              @mouseover.native="mouseover(project.title, i)"
               @mouseout.native="mouseout"
             >
               <div class="img__i">
@@ -32,12 +34,13 @@
       </li>
     </ul>
 
-    <Toggler
-      @click="toggleDarkMode"
-      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
-    />
+    <router-link :to="isDark ? '/' : '/black'">
+      <Toggler
+        :isDark="isDark"
+        :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+      />
+    </router-link>
   </main>
-  <!-- </div> -->
 </template>
 
 <script>
@@ -54,13 +57,17 @@ export default {
   },
   props: {
     scroll: {
-      type: Number
+      type: Number,
+      default: 0
+    },
+    isDark: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
     cases: [],
-    chars: [],
-    isDark: false
+    chars: []
   }),
   created() {
     this.fetchCases()
@@ -77,18 +84,15 @@ export default {
       // Client instance
       const client = contentful.createClient({ accessToken, space })
 
+      const blackID = '211zl80RZxQhtGrawZYmSE'
+      const mainID = '1XHOEik80zQ2MY8aHdrKFd'
+
       // Get cases
-      client
-        .getEntries({
-          content_type: 'cases'
+      client.getEntry(this.isDark ? blackID : mainID).then(({ fields }) => {
+        fields.list.forEach(v => {
+          this.cases.push(v.fields)
         })
-        .then(({ items }) => {
-          items.forEach(item => {
-            item.fields.list.forEach(v => {
-              this.cases.push(v.fields)
-            })
-          })
-        })
+      })
     },
     mouseover(title) {
       this.title = title
@@ -127,10 +131,6 @@ export default {
         duration: 1800,
         easing: 'easeInOutCirc'
       })
-    },
-    toggleDarkMode() {
-      this.isDark = !this.isDark
-      this.$emit('toggle-dark', this.isDark)
     }
   }
 }
@@ -245,6 +245,9 @@ $mob-mb: 28%
     &:focus
       color: var(--color-text-dk)
 
+  .cover__inner
+    background: var(--color-bg-lt)
+
 h1
   pointer-events: none
   z-index: 1
@@ -284,7 +287,7 @@ h1
   transition: transform .5s cubic-bezier(.455,.03,.515,.955)
   transform: scaleX(1)
 
-.img:hover
+.case li:first-child .img:hover
   transform: scale3d(.95,.95,1)
   img
     transform: scale3d(1.15,1.15,1)

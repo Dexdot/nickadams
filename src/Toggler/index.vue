@@ -1,12 +1,12 @@
 <template>
-  <button :class="['toggler u-center', { visible }]" @click="onClick">
+  <div :class="['toggler u-center', { visible }]">
     <svg
       width="16"
       height="16"
       viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      :style="{ opacity: dark ? 1 : 0.2 }"
+      :style="{ opacity: isDark ? 1 : 0.2 }"
     >
       <path
         d="M13.9999 8.52667C13.8951 9.66147 13.4692 10.7429 12.7721 11.6445C12.075 12.5461 11.1356 13.2305 10.0637 13.6177C8.99188 14.0049 7.83192 14.0787 6.7196 13.8307C5.60728 13.5827 4.5886 13.023 3.78275 12.2172C2.97691 11.4113 2.41723 10.3927 2.16921 9.28033C1.92118 8.16801 1.99508 7.00806 2.38224 5.9362C2.7694 4.86434 3.45382 3.92491 4.35541 3.22784C5.257 2.53076 6.33847 2.10487 7.47327 2C6.80888 2.89884 6.48917 4.0063 6.57229 5.12094C6.65541 6.23559 7.13584 7.28337 7.9262 8.07373C8.71656 8.86409 9.76435 9.34452 10.879 9.42765C11.9936 9.51077 13.1011 9.19106 13.9999 8.52667V8.52667Z"
@@ -15,28 +15,29 @@
         stroke-linejoin="round"
       />
     </svg>
-  </button>
+  </div>
 </template>
 
 <script>
+import { isTouchDevice } from '@/scripts/detect'
+
 export default {
   name: 'Toggler',
+  props: {
+    isDark: { type: Boolean, default: false }
+  },
   data: () => ({
-    dark: false,
     visible: false,
     timeout: null
   }),
   mounted() {
+    if (isTouchDevice()) this.visible = true
     window.addEventListener('mousemove', this.mousemove.bind(this))
   },
   destroyed() {
     window.removeEventListener('mousemove', this.mousemove.bind(this))
   },
   methods: {
-    onClick() {
-      this.$emit('click')
-      this.dark = !this.dark
-    },
     mousemove() {
       this.visible = true
 
@@ -54,6 +55,10 @@ export default {
   transition: opacity 0.25s ease
   opacity: 0
   pointer-events: none
+
+  @media (max-width: 500px)
+    opacity: 1
+    pointer-events: none
 
 .toggler.visible
   opacity: 1

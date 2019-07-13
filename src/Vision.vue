@@ -9,6 +9,10 @@
           :key="i"
         ></p>
       </article>
+
+      <div class="vision-counter">
+        {{ activeSlide + 1 }} / {{ slides.length }}
+      </div>
     </section>
   </main>
 </template>
@@ -120,8 +124,18 @@ export default {
     &:focus
       color: var(--color-text-dk)
 
+.vision-counter
+  position: absolute
+  bottom: 6%
+  right: var(--unit)
+
+  @media (max-width: 500px)
+    right: 50%
+    transform: translateX(50%)
+
 .vision-container
   min-height: 100vh
+  min-height: calc(var(--vh, 1vh) * 100)
   width: 100vw
   overflow: hidden
   flex-direction: column

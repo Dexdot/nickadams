@@ -2,7 +2,10 @@
   <header :class="['header', { dark }]">
     <div class="container u-flex u-aic u-jcsb">
       <router-link class="t-ttu" to="/">Nick Adams</router-link>
-      <button :class="['menu-btn', { active: isMenuActive }]" @click="onClick">
+      <button
+        :class="['menu-btn', { active: isMenuActive }]"
+        @click="$emit('menu-btn-click')"
+      >
         <span class="menu-btn__circle"></span>
         <span class="menu-btn__circle"></span>
         <span class="menu-btn__circle"></span>
@@ -16,16 +19,8 @@
 export default {
   name: 'Header',
   props: {
-    dark: { type: Boolean, default: false }
-  },
-  data: () => ({
-    isMenuActive: false
-  }),
-  methods: {
-    onClick() {
-      this.$emit('menu-btn-click')
-      this.isMenuActive = !this.isMenuActive
-    }
+    dark: { type: Boolean, default: false },
+    isMenuActive: { type: Boolean, default: false }
   }
 }
 </script>
@@ -50,8 +45,11 @@ export default {
   margin-left: -4px
   margin-top: -4px
 
-  transition: transform 0.25s ease-in-out
+  transition: transform 0.25s ease-in-out, opacity 0.25s ease
   transform-origin: 50% 50%
+
+.menu-btn:hover
+  opacity: 0.3
 
 .menu-btn.active
   transform: rotate(45deg)

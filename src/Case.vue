@@ -296,6 +296,7 @@ export default {
   @media (max-width: 700px)
     object-fit: cover
     height: 100vh
+    height: calc(var(--vh, 1vh) * 100)
     margin: 48px 0 48px calc(-1 * #{var(--unit)})
 
 // Footer

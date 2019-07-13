@@ -1,6 +1,10 @@
 <template>
   <div id="app" class="page">
-    <Header :dark="isDark" @menu-btn-click="onMenuBtnClick" />
+    <Header
+      :dark="isDark"
+      :isMenuActive="isMenuActive"
+      @menu-btn-click="onMenuBtnClick"
+    />
     <Menu :active="isMenuActive" />
 
     <div class="scroll-container" ref="container">
@@ -18,9 +22,11 @@
 <script>
 import VirtualScroll from 'virtual-scroll'
 import inobounce from 'inobounce'
-import loop from '@/scripts/loop'
 import Header from '@/Header'
 import Menu from '@/Menu'
+
+import loop from '@/scripts/loop'
+import { isSafari } from '@/scripts/detect'
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
@@ -37,9 +43,13 @@ export default {
     isDark: false,
     scroll: 0,
     translate: 0,
-    vs: null
+    vs: null,
+    height: {}
   }),
   mounted() {
+    this.getSize()
+    window.addEventListener('resize', this.getSize.bind(this))
+
     loop.start()
 
     this.vs = new VirtualScroll({
@@ -48,16 +58,31 @@ export default {
       passive: true
     })
 
-    this.vs.on(this.onScroll)
-    loop.add(this.checkSmooth.bind(this), 'checkSmooth')
+    if (isSafari()) {
+      window.addEventListener('scroll', this.scrollSafari.bind(this))
+    } else {
+      this.vs.on(this.onScroll)
+      loop.add(this.checkSmooth.bind(this), 'checkSmooth')
+    }
 
     inobounce.enable()
   },
   destroyed() {
-    this.vs.off(this.onScroll)
-    loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
+    window.removeEventListener('resize', this.getSize.bind(this))
+
+    if (isSafari()) {
+      window.removeEventListener('scroll', this.scrollSafari.bind(this))
+    } else {
+      this.vs.off(this.onScroll)
+      loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
+    }
   },
   methods: {
+    getSize() {
+      this.height = {
+        window: window.innerHeight
+      }
+    },
     onMenuBtnClick() {
       if (!this.isMenuActive) isDark = this.isDark
 
@@ -67,23 +92,27 @@ export default {
     onToggle(v) {
       this.isDark = v
     },
-    onScroll(e) {
-      const scroll = this.scroll + -1 * e.deltaY
+    onScroll({ deltaY }) {
+      const scroll = this.scroll + -1 * deltaY
 
       this.scroll = Math.min(
         Math.max(scroll, 0),
-        this.$refs.inner.getBoundingClientRect().height - window.innerHeight
+        this.$refs.inner.getBoundingClientRect().height - this.height.window
       )
     },
     checkSmooth() {
       if (Math.round(this.scroll) !== Math.round(this.translate)) {
         this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
       }
+    },
+    scrollSafari() {
+      this.scroll = window.pageYOffset
     }
   },
   watch: {
     $route() {
       this.scroll = 0
+      this.translate = 0
       this.isMenuActive = false
     }
   }
@@ -114,5 +143,6 @@ export default {
 .scroll-container
   width: 100vw
   height: 100vh
+  height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
 </style>
