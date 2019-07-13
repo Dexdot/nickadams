@@ -51,6 +51,10 @@
       </div>
     </section>
 
+    <button class="credits-btn" @click="$emit('credits-click')" type="button">
+      Credits
+    </button>
+
     <ul class="about__list u-flex">
       <li v-for="file in content.mediaList" :key="file.url">
         <figure class="about__img">
@@ -151,6 +155,9 @@ export default {
 <style lang="sass" scoped>
 @import "~@/sass/utils"
 
+.credits-btn
+  margin-bottom: 48px
+
 .about
   min-height: 100vh
   padding-top: 5.6vh
@@ -176,7 +183,7 @@ export default {
 
 .about__info
   padding-left: mix(3)
-  margin-bottom: 16%
+  margin-bottom: 12.2%
 
   @media (max-width: 800px)
     padding-left: 0

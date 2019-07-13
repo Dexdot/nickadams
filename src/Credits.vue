@@ -1,0 +1,157 @@
+<template>
+  <transition name="credits">
+    <section class="credits" v-show="active">
+      <div class="credits__overlay"></div>
+
+      <nav class="credits__nav">
+        <ul>
+          <li>
+            <router-link to="/">
+              <span class="t-title">Design</span>
+              <p class="t-ttu">Nick Adams</p>
+            </router-link>
+          </li>
+          <li>
+            <a href="http://hvxzcb.ru" target="_blank">
+              <span class="t-title">Development</span>
+              <p class="t-ttu">Kamil Sometimes</p>
+            </a>
+          </li>
+          <li>
+            <a href="http://darinayurina.com" target="_blank">
+              <span class="t-title">Management</span>
+              <p class="t-ttu">Darina Yurina</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </section>
+  </transition>
+</template>
+
+<script>
+export default {
+  name: 'Credits',
+  props: {
+    active: {
+      type: Boolean,
+      default: false
+    }
+  }
+}
+</script>
+
+<style lang="sass" scoped>
+@import "~@/sass/utils"
+
+/* ENTER */
+.credits-enter
+  pointer-events: none
+
+  nav li
+    opacity: 0
+    transform: translateY(16px)
+
+  .credits__overlay
+    transform: translateY(101%)
+
+
+.credits-enter-to
+  pointer-events: auto
+
+  .credits__overlay,
+  nav li
+    opacity: 1
+    transform: translateY(0%)
+
+
+.credits-enter-active
+  transition: 1s ease-in-out
+
+  .credits__overlay
+    transition: 0.8s cubic-bezier(0.645, 0.045, 0.355, 1)
+
+@for $i from 1 through 3
+  .credits-enter-active .credits__nav li:nth-child(#{$i})
+    transition: 0.4s ease (#{$i*0.05s + 0.4s})
+
+
+/* LEAVE */
+.credits-leave
+  pointer-events: auto
+
+  nav li
+    opacity: 1
+
+  .credits__overlay,
+  nav li
+    transform: translateY(0%)
+
+.credits-leave-to
+  pointer-events: none
+
+  nav li
+    opacity: 0
+
+  .credits__overlay
+    transform: translateY(101%)
+
+.credits-leave-active
+  transition: 1s ease-in-out
+
+  .credits__overlay
+    transition: 0.8s cubic-bezier(0.645, 0.045, 0.355, 1)
+
+@for $i from 1 through 3
+  .credits-leave-active .credits__nav li:nth-child(#{$i})
+    transition: 0.4s ease (#{$i*0.05s})
+
+.credits
+  z-index: 1
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+  width: 100vw
+  height: 100vh
+  height: calc(var(--vh, 1vh) * 100)
+
+
+// Overlay
+.credits__overlay
+  background: #000
+  position: absolute
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  height: calc(var(--vh, 1vh) * 100)
+
+.credits__nav
+  z-index: 1
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+
+  text-align: center
+
+  width: 100%
+
+.credits__nav span
+  display: block
+  margin-bottom: 4px
+
+.credits__nav li:not(:last-child)
+  display: block
+  margin-bottom: 24px
+
+.page nav /deep/ a
+  &,
+  &:visited,
+  &:active,
+  &:focus
+    color: #fff
+</style>

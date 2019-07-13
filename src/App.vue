@@ -2,10 +2,11 @@
   <div id="app" class="page">
     <Header
       :dark="isDark"
-      :isMenuActive="isMenuActive"
+      :isHeaderActive="isHeaderActive"
       @menu-btn-click="onMenuBtnClick"
     />
     <Menu :active="isMenuActive" />
+    <Credits :active="isCreditsActive" />
 
     <div class="scroll-container" ref="container">
       <div
@@ -13,7 +14,11 @@
         ref="inner"
         :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
       >
-        <router-view :scroll="translate" @toggle-dark="onToggle" />
+        <router-view
+          :scroll="translate"
+          @credits-click="onCreditsBtnClick"
+          @toggle-dark="onToggle"
+        />
       </div>
     </div>
   </div>
@@ -24,6 +29,7 @@ import VirtualScroll from 'virtual-scroll'
 import inobounce from 'inobounce'
 import Header from '@/Header'
 import Menu from '@/Menu'
+import Credits from '@/Credits'
 
 import loop from '@/scripts/loop'
 import { isSafari } from '@/scripts/detect'
@@ -36,19 +42,22 @@ export default {
   name: 'App',
   components: {
     Header,
-    Menu
+    Menu,
+    Credits
   },
   data: () => ({
+    isHeaderActive: false,
     isMenuActive: false,
+    isCreditsActive: false,
     isDark: false,
     scroll: 0,
     translate: 0,
     vs: null,
-    height: {}
+    winHeight: 0
   }),
   mounted() {
-    this.getSize()
-    window.addEventListener('resize', this.getSize.bind(this))
+    this.getWinHeight()
+    window.addEventListener('resize', this.getWinHeight.bind(this))
 
     loop.start()
 
@@ -68,7 +77,7 @@ export default {
     inobounce.enable()
   },
   destroyed() {
-    window.removeEventListener('resize', this.getSize.bind(this))
+    window.removeEventListener('resize', this.getWinHeight.bind(this))
 
     if (isSafari()) {
       window.removeEventListener('scroll', this.scrollSafari.bind(this))
@@ -78,16 +87,27 @@ export default {
     }
   },
   methods: {
-    getSize() {
-      this.height = {
-        window: window.innerHeight
-      }
+    getWinHeight() {
+      this.winHeight = window.innerHeight
     },
     onMenuBtnClick() {
-      if (!this.isMenuActive) isDark = this.isDark
+      if (this.isCreditsActive) {
+        // Credits close
+        this.isCreditsActive = false
+        this.isHeaderActive = false
+      } else {
+        // Menu toggle
+        if (!this.isMenuActive) isDark = this.isDark
 
-      this.isMenuActive = !this.isMenuActive
-      this.isDark = this.isMenuActive ? this.isMenuActive : isDark
+        this.isMenuActive = !this.isMenuActive
+        this.isHeaderActive = this.isMenuActive
+        this.isDark = this.isMenuActive ? this.isMenuActive : isDark
+      }
+    },
+    onCreditsBtnClick() {
+      // Credits open
+      this.isCreditsActive = true
+      this.isHeaderActive = true
     },
     onToggle(v) {
       this.isDark = v
@@ -97,7 +117,7 @@ export default {
 
       this.scroll = Math.min(
         Math.max(scroll, 0),
-        this.$refs.inner.getBoundingClientRect().height - this.height.window
+        this.$refs.inner.getBoundingClientRect().height - this.winHeight
       )
     },
     checkSmooth() {
@@ -114,6 +134,7 @@ export default {
       this.scroll = 0
       this.translate = 0
       this.isMenuActive = false
+      this.isHeaderActive = false
     }
   }
 }

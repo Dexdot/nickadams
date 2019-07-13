@@ -3,7 +3,7 @@
     <div class="container u-flex u-aic u-jcsb">
       <router-link class="t-ttu" to="/">Nick Adams</router-link>
       <button
-        :class="['menu-btn', { active: isMenuActive }]"
+        :class="['menu-btn', { active: isHeaderActive }]"
         @click="$emit('menu-btn-click')"
       >
         <span class="menu-btn__circle"></span>
@@ -20,7 +20,7 @@ export default {
   name: 'Header',
   props: {
     dark: { type: Boolean, default: false },
-    isMenuActive: { type: Boolean, default: false }
+    isHeaderActive: { type: Boolean, default: false }
   }
 }
 </script>
