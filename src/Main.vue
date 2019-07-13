@@ -1,11 +1,12 @@
 <template>
   <main :class="['main', { dark: isDark }]">
-    <div
+    <!-- <div
       class="cover"
       :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
     >
       <div class="cover__inner" ref="cover"></div>
-    </div>
+    </div> -->
+
     <h1
       class="t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
@@ -71,10 +72,9 @@ export default {
   }),
   created() {
     this.fetchCases()
-    this.$emit('toggle-dark', false)
   },
   mounted() {
-    this.enterAnimation()
+    // this.enterAnimation()
   },
   methods: {
     fetchCases() {

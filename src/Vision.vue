@@ -14,6 +14,13 @@
         {{ activeSlide + 1 }} / {{ slides.length }}
       </div>
     </section>
+
+    <Next to="/black">
+      <span slot="title">Black</span>
+      <span slot="text"
+        >Jamie then returned home to set up his own product
+      </span>
+    </Next>
   </main>
 </template>
 
@@ -26,8 +33,13 @@
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
+import Next from '@/Next'
+
 export default {
   name: 'Vision',
+  components: {
+    Next
+  },
   data: () => ({
     slides: [],
     activeSlide: 0
@@ -134,6 +146,7 @@ export default {
     transform: translateX(50%)
 
 .vision-container
+  position: relative
   min-height: 100vh
   min-height: calc(var(--vh, 1vh) * 100)
   width: 100vw

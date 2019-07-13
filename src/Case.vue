@@ -136,7 +136,7 @@ export default {
   },
   created() {
     this.fetchCase()
-    this.$emit('toggle-dark', false)
+    // this.$emit('toggle-dark', false)
   },
   destroyed() {
     loop.remove(this.setAsideHeight.bind(this), 'setAsideHeight')

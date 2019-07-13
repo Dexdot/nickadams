@@ -89,6 +89,13 @@
         <span>No one there</span><span>get back</span>
       </h1>
     </figure>
+
+    <Next to="/vision">
+      <span slot="title">Vision</span>
+      <span slot="text"
+        >Jamie then returned home to set up his own product
+      </span>
+    </Next>
   </main>
 </template>
 
@@ -96,8 +103,13 @@
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
+import Next from '@/Next'
+
 export default {
   name: 'About',
+  components: {
+    Next
+  },
   data: () => ({
     content: {
       email: 'stereocage@gmail.com',

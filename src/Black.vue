@@ -1,14 +1,24 @@
 <template>
-  <Main :isDark="true" :scroll="scroll" />
+  <div>
+    <Main :isDark="true" :scroll="scroll" />
+    <Next to="/">
+      <span slot="title">Index</span>
+      <span slot="text"
+        >Jamie then returned home to set up his own product
+      </span>
+    </Next>
+  </div>
 </template>
 
 <script>
 import Main from '@/Main.vue'
+import Next from '@/Next'
 
 export default {
   name: 'Black',
   components: {
-    Main
+    Main,
+    Next
   },
   props: {
     scroll: {

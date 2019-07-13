@@ -3,7 +3,7 @@
     <Header
       :dark="isDark"
       :isHeaderActive="isHeaderActive"
-      @menu-btn-click="onMenuBtnClick"
+      @menu-btn-click="toggleMenu"
     />
     <Menu :active="isMenuActive" />
     <Credits :active="isCreditsActive" />
@@ -14,13 +14,17 @@
         ref="inner"
         :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
       >
-        <router-view
-          :scroll="translate"
-          @credits-click="onCreditsBtnClick"
-          @toggle-dark="onToggle"
-        />
+        <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
+          <router-view
+            :scroll="translate"
+            @credits-click="onCreditsBtnClick"
+            @toggle-dark="onToggle"
+          />
+        </transition>
       </div>
     </div>
+
+    <div class="transition-cover" ref="cover"></div>
   </div>
 </template>
 
@@ -33,6 +37,8 @@ import Credits from '@/Credits'
 
 import loop from '@/scripts/loop'
 import { isSafari } from '@/scripts/detect'
+
+import transitions from '@/transitions/'
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
@@ -53,14 +59,18 @@ export default {
     scroll: 0,
     translate: 0,
     vs: null,
-    winHeight: 0
+    winHeight: 0,
+    dir: {}
   }),
   mounted() {
+    // Window height
     this.getWinHeight()
     window.addEventListener('resize', this.getWinHeight.bind(this))
 
+    // Start RAF
     loop.start()
 
+    // On Scroll
     this.vs = new VirtualScroll({
       mouseMultiplier: 0.8,
       touchMultiplier: 4,
@@ -74,6 +84,7 @@ export default {
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
     }
 
+    // Start Inobounce
     inobounce.enable()
   },
   destroyed() {
@@ -90,7 +101,7 @@ export default {
     getWinHeight() {
       this.winHeight = window.innerHeight
     },
-    onMenuBtnClick() {
+    toggleMenu() {
       if (this.isCreditsActive) {
         // Credits close
         this.isCreditsActive = false
@@ -109,8 +120,8 @@ export default {
       this.isCreditsActive = true
       this.isHeaderActive = true
     },
-    onToggle(v) {
-      this.isDark = v
+    onToggle() {
+      // this.isDark = v
     },
     onScroll({ deltaY }) {
       const scroll = this.scroll + -1 * deltaY
@@ -127,14 +138,30 @@ export default {
     },
     scrollSafari() {
       this.scroll = window.pageYOffset
+    },
+    async enter(el, done) {
+      await transitions[this.dir.to.name].enter(el)
+      done()
+    },
+    async leave(el, done) {
+      const cover = this.$refs.cover
+
+      if (this.isMenuActive) this.toggleMenu()
+
+      await transitions[this.dir.from.name].leave(el)
+      await transitions['cover'].enter(cover)
+
+      this.isDark = transitions[this.dir.to.name].isDark
+      this.scroll = 0
+      this.translate = 0
+
+      await transitions['cover'].leave(cover)
+      done()
     }
   },
   watch: {
-    $route() {
-      this.scroll = 0
-      this.translate = 0
-      this.isMenuActive = false
-      this.isHeaderActive = false
+    $route(to, from) {
+      this.dir = { to, from }
     }
   }
 }
@@ -166,4 +193,15 @@ export default {
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
+
+.transition-cover
+  position: fixed
+  top: 0
+  left: 0
+
+  width: 100vw
+  height: 100vh
+  background: #000
+
+  transform: translateY(101%)
 </style>
