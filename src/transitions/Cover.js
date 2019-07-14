@@ -6,7 +6,7 @@ const enter = el =>
       targets: el,
       duration: 800,
       translateY: ['101%', '0%'],
-      easing: 'easeInOutSine',
+      easing: 'easeInOutCirc',
       begin: () => {
         el.style.willChange = 'transform'
       },
@@ -23,7 +23,7 @@ const leave = el =>
       targets: el,
       duration: 800,
       translateY: ['0%', '-101%'],
-      easing: 'easeInOutSine',
+      easing: 'easeInOutCirc',
       begin: () => {
         el.style.willChange = 'transform'
       },

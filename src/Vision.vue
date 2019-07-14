@@ -25,11 +25,6 @@
 </template>
 
 <script>
-// 1. Фетчим текст
-// 2. Разбиваем его на слайды
-// 3. Показываем текст из блюра
-// 4. По клику переключаем слайд, анимаха блюром
-
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
@@ -52,7 +47,8 @@ export default {
     render: item => documentToHtmlString(item),
     fetchVision() {
       // Get keys
-      const { space, accessToken } = this.$store.getters
+      const space = process.env.VUE_APP_SPACE_ID
+      const accessToken = process.env.VUE_APP_ACCESS_TOKEN
 
       // Client instance
       const client = contentful.createClient({ accessToken, space })
@@ -67,12 +63,15 @@ export default {
           this.slides = [...this.getSlides(fields)]
 
           this.$nextTick(() => {
+            const { quotes } = this.$refs
+            if (!quotes) return false
+
             setTimeout(() => {
-              this.$refs.quotes.classList.add('blur')
+              quotes.classList.add('blur')
             }, 200)
 
             setTimeout(() => {
-              this.$refs.quotes.classList.add('is-faster')
+              quotes.classList.add('is-faster')
             }, 2200)
           })
         })
@@ -100,7 +99,6 @@ export default {
     },
     onClick() {
       this.$refs.quotes.classList.remove('blur')
-
       this.$refs.quotes.addEventListener('transitionend', this.onTransitionEnd)
     },
     onTransitionEnd({ propertyName }) {
@@ -111,12 +109,12 @@ export default {
       } else {
         this.activeSlide++
       }
-      this.$refs.quotes.classList.add('blur')
+      const { quotes } = this.$refs
+      if (!quotes) return false
 
-      this.$refs.quotes.removeEventListener(
-        'transitionend',
-        this.onTransitionEnd
-      )
+      quotes.classList.add('blur')
+
+      quotes.removeEventListener('transitionend', this.onTransitionEnd)
     }
   }
 }

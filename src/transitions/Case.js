@@ -12,7 +12,10 @@ const enter = el =>
       },
       complete: () => {
         el.style.willChange = ''
-        resolve()
+        // resolve()
+      },
+      update: ({ progress }) => {
+        if (progress >= 60) resolve()
       }
     })
   })
@@ -29,7 +32,10 @@ const leave = el =>
       },
       complete: () => {
         el.style.willChange = ''
-        resolve()
+        // resolve()
+      },
+      update: ({ progress }) => {
+        if (progress >= 60) resolve()
       }
     })
   })

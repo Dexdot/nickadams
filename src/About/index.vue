@@ -125,7 +125,8 @@ export default {
   methods: {
     fetchAbout() {
       // Get keys
-      const { space, accessToken } = this.$store.getters
+      const space = process.env.VUE_APP_SPACE_ID
+      const accessToken = process.env.VUE_APP_ACCESS_TOKEN
 
       // Client instance
       const client = contentful.createClient({ accessToken, space })

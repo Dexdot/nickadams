@@ -1,12 +1,5 @@
 <template>
   <main :class="['main', { dark: isDark }]">
-    <!-- <div
-      class="cover"
-      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
-    >
-      <div class="cover__inner" ref="cover"></div>
-    </div> -->
-
     <h1
       class="t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
@@ -45,11 +38,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import anime from 'animejs'
 import charming from 'charming'
 import Toggler from '@/Toggler'
-
-const contentful = require('contentful')
 
 export default {
   name: 'Main',
@@ -67,34 +60,18 @@ export default {
     }
   },
   data: () => ({
-    cases: [],
     chars: []
   }),
-  created() {
-    this.fetchCases()
-  },
-  mounted() {
-    // this.enterAnimation()
+  computed: {
+    ...mapGetters(['blackCases', 'mainCases']),
+    cases() {
+      return this.isDark ? this.blackCases : this.mainCases
+    }
   },
   methods: {
-    fetchCases() {
-      // Get keys
-      const { space, accessToken } = this.$store.getters
-
-      // Client instance
-      const client = contentful.createClient({ accessToken, space })
-
-      const blackID = '211zl80RZxQhtGrawZYmSE'
-      const mainID = '1XHOEik80zQ2MY8aHdrKFd'
-
-      // Get cases
-      client.getEntry(this.isDark ? blackID : mainID).then(({ fields }) => {
-        fields.list.forEach(v => {
-          this.cases.push(v.fields)
-        })
-      })
-    },
     mouseover(title) {
+      if (!this.$refs.title) return false
+
       this.title = title
       this.$refs.title.innerHTML = title
       charming(this.$refs.title)
@@ -104,10 +81,14 @@ export default {
       this.showTitle(false)
     },
     showTitle(show = true, cb) {
-      anime.remove(this.$refs.title.querySelectorAll('span'))
+      const { title } = this.$refs
+      if (!title) return false
+      const chars = title.querySelectorAll('span')
+
+      anime.remove(chars)
 
       anime({
-        targets: this.$refs.title.querySelectorAll('span'),
+        targets: chars,
         opacity: show ? [0, 1] : [1, 0],
         translateY: show ? ['40px', '0px'] : '0px',
         easing: 'easeOutQuart',
@@ -116,20 +97,6 @@ export default {
         complete: () => {
           if (cb) cb()
         }
-      })
-    },
-    enterAnimation() {
-      anime({
-        targets: this.$refs.cover,
-        translateY: ['0%', '-100%'],
-        duration: 1800,
-        easing: 'easeInOutCirc'
-      })
-      anime({
-        targets: this.$el,
-        translateY: ['200px', '0px'],
-        duration: 1800,
-        easing: 'easeInOutCirc'
       })
     }
   }
@@ -201,23 +168,8 @@ $xxl-w: var(--xxl-w)
 
 $mob-mb: 28%
 
-.cover
-  z-index: 3
-  position: fixed
-  top: -200px
-  left: 0
-  width: 100vw
-  height: calc(100vh + 200px)
-  pointer-events: none
-
-.cover__inner
-  width: 100vw
-  height: calc(100vh + 200px)
-  background: #000
-
-.main,
-.cover__inner
-  will-change: transform
+.main
+  min-height: 100vh
 
 .main:not(.dark)
   transition: background 0.25s ease-in-out

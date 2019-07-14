@@ -105,12 +105,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import CaseRow from '@/CaseRow'
 import CaseBox from '@/CaseBox'
 import loop from '@/scripts/loop'
+import { fetchCase } from '@/scripts/api'
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
-const contentful = require('contentful')
 
 export default {
   name: 'Case',
@@ -125,6 +127,7 @@ export default {
     asideHeight: 100
   }),
   computed: {
+    ...mapGetters(['blackCases', 'mainCases']),
     awards() {
       const result = this.project.awards.reduce((sum, cur, i, arr) => {
         if (i === 1) return `${sum} / ${cur} / `
@@ -135,7 +138,7 @@ export default {
     }
   },
   created() {
-    this.fetchCase()
+    this.setCase()
     // this.$emit('toggle-dark', false)
   },
   destroyed() {
@@ -145,31 +148,30 @@ export default {
     setAsideHeight() {
       if (this.$refs.aside) this.asideHeight = this.$refs.aside.offsetHeight
     },
-    fetchCase() {
-      // Get keys
-      const { space, accessToken } = this.$store.getters
+    async setCase() {
+      const slug = this.$route.params.id
 
-      // Client instance
-      const client = contentful.createClient({ accessToken, space })
+      const cases = [...this.blackCases, ...this.mainCases]
+      let stop = false
 
-      // Get case by slug
-      client
-        .getEntries({
-          content_type: 'case',
-          'fields.slug': this.$route.params.id
-        })
-        .then(({ items }) => {
-          // Project data
-          this.project = items[0] ? items[0].fields : null
+      // Ищем кейс в сторе
+      cases.forEach(v => {
+        if (v.slug === slug && !stop) {
+          stop = true
+          this.project = v
+        }
+      })
 
-          // Rich content
-          this.content = this.project.content.content
+      // Тянем из API
+      if (!this.project) this.project = await fetchCase(slug)
 
-          // Box color
-          if (this.project.boxColor) this.boxColor = this.project.boxColor
+      // Rich content
+      this.content = this.project.content.content
 
-          loop.add(this.setAsideHeight.bind(this), 'setAsideHeight')
-        })
+      // Box color
+      if (this.project.boxColor) this.boxColor = this.project.boxColor
+
+      loop.add(this.setAsideHeight.bind(this), 'setAsideHeight')
     },
     render: item => documentToHtmlString(item),
     isText: item => item.nodeType === 'paragraph',
