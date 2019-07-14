@@ -1,8 +1,8 @@
 <template>
   <div>
     <Main :isDark="true" :scroll="scroll" />
-    <Next to="/">
-      <span slot="title">Index</span>
+    <Next to="/" :isLight="true">
+      <span slot="title">There will be light</span>
       <span slot="text"
         >Jamie then returned home to set up his own product
       </span>

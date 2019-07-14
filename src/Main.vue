@@ -1,5 +1,6 @@
 <template>
-  <main :class="['main', { dark: isDark }]">
+  <!-- <main :class="['main', { dark: isDark }]"> -->
+  <main class="main">
     <h1
       class="t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
@@ -171,34 +172,31 @@ $mob-mb: 28%
 .main
   min-height: 100vh
 
-.main:not(.dark)
-  transition: background 0.25s ease-in-out
+// .main:not(.dark)
+//   transition: background 0.5s ease-in-out
 
-  color: var(--color-text-lt)
-  background: var(--color-bg-lt)
+//   color: var(--color-text-lt)
+//   background: var(--color-bg-lt)
 
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: var(--color-text-lt)
+//   /deep/ a
+//     &,
+//     &:visited,
+//     &:active,
+//     &:focus
+//       color: var(--color-text-lt)
 
-.main.dark
-  transition: background 0.25s ease-in-out
+// .main.dark
+//   transition: background 0.5s ease-in-out
 
-  color: var(--color-text-dk)
-  background: var(--color-bg-dk)
+//   color: var(--color-text-dk)
+//   background: var(--color-bg-dk)
 
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: var(--color-text-dk)
-
-  .cover__inner
-    background: var(--color-bg-lt)
+//   /deep/ a
+//     &,
+//     &:visited,
+//     &:active,
+//     &:focus
+//       color: var(--color-text-dk)
 
 h1
   pointer-events: none

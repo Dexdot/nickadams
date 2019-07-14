@@ -40,8 +40,8 @@ export default {
     activeSlide: 0
   }),
   created() {
-    this.fetchVision()
     this.$emit('toggle-dark', true)
+    this.fetchVision()
   },
   methods: {
     render: item => documentToHtmlString(item),
@@ -122,17 +122,6 @@ export default {
 
 <style lang="sass" scoped>
 @import "~@/sass/utils"
-
-.vision
-  color: var(--color-text-dk)
-  background: var(--color-bg-dk)
-
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: var(--color-text-dk)
 
 .vision-counter
   position: absolute

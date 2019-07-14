@@ -4,9 +4,9 @@ const enter = el =>
   new Promise(resolve => {
     anime({
       targets: el,
-      duration: 400,
+      duration: 600,
       opacity: [0, 1],
-      easing: 'easeInOutSine',
+      easing: 'easeOutSine',
       begin: () => {
         el.style.willChange = 'opacity'
       },
@@ -24,7 +24,7 @@ const leave = el =>
   new Promise(resolve => {
     anime({
       targets: el,
-      duration: 400,
+      duration: 600,
       opacity: [1, 0],
       easing: 'easeInOutSine',
       begin: () => {

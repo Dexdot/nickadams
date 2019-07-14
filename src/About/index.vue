@@ -1,94 +1,103 @@
 <template>
-  <main class="about container">
-    <section class="about__info u-flex">
-      <article class="about__text">
-        <p v-for="(p, i) in content.text" :key="i" v-html="render(p)"></p>
-        <img src="./sign.svg" alt="Подпись" class="sign" />
-      </article>
-      <div class="about__contact">
-        <p>Contact</p>
+  <main class="about">
+    <div class="about-container container">
+      <section class="about__info u-flex">
+        <article class="about__text">
+          <p v-for="(p, i) in content.text" :key="i" v-html="render(p)"></p>
+          <img src="./sign.svg" alt="Подпись" class="sign" />
+        </article>
+        <div class="about__contact">
+          <p>Contact</p>
 
-        <ul>
-          <li>
-            <a :href="`mailto:${this.content.email}`">{{
-              this.content.email
-            }}</a>
-          </li>
-          <li>
-            PO Box 106-377
-          </li>
-          <li>
-            Saint Petersburg
-          </li>
-          <li>
-            Russia
-          </li>
-        </ul>
+          <ul>
+            <li>
+              <a :href="`mailto:${this.content.email}`">{{
+                this.content.email
+              }}</a>
+            </li>
+            <li>
+              PO Box 106-377
+            </li>
+            <li>
+              Saint Petersburg
+            </li>
+            <li>
+              Russia
+            </li>
+          </ul>
 
-        <ul>
-          <li>
-            <a href="https://behance.net/stereocage" target="_blank">Behance</a>
-          </li>
-          <li>
-            <a href="https://dribbble.com/stereocage" target="_blank"
-              >Dribbble</a
-            >
-          </li>
-          <li>
-            <a href="https://instagram.com/stereocage" target="_blank"
-              >Instagram</a
-            >
-          </li>
-          <li>
-            <a href="https://facebook.com/stereocage" target="_blank"
-              >Facebook</a
-            >
-          </li>
-          <li>
-            <a href="https://github.com/Dexdot" target="_blank">Github</a>
-          </li>
-        </ul>
-      </div>
-    </section>
+          <ul>
+            <li>
+              <a href="https://behance.net/stereocage" target="_blank"
+                >Behance</a
+              >
+            </li>
+            <li>
+              <a href="https://dribbble.com/stereocage" target="_blank"
+                >Dribbble</a
+              >
+            </li>
+            <li>
+              <a href="https://instagram.com/stereocage" target="_blank"
+                >Instagram</a
+              >
+            </li>
+            <li>
+              <a href="https://facebook.com/stereocage" target="_blank"
+                >Facebook</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/Dexdot" target="_blank">Github</a>
+            </li>
+          </ul>
+        </div>
+      </section>
 
-    <button class="credits-btn" @click="$emit('credits-click')" type="button">
-      Credits
-    </button>
+      <button class="credits-btn" @click="$emit('credits-click')" type="button">
+        Credits
+      </button>
 
-    <ul class="about__list u-flex">
-      <li v-for="file in content.mediaList" :key="file.url">
-        <figure class="about__img">
-          <video v-if="file.type === 'video'" autoplay playsinline loop>
-            <source :src="file.url" :type="file.contentType" />
-          </video>
+      <ul class="about__list u-flex">
+        <li v-for="file in content.mediaList" :key="file.url">
+          <figure class="about__img">
+            <video v-if="file.type === 'video'" autoplay playsinline loop>
+              <source :src="file.url" :type="file.contentType" />
+            </video>
 
-          <img
-            v-if="file.type === 'image'"
-            :src="file.url"
-            :alt="file.fileName"
+            <img
+              v-if="file.type === 'image'"
+              :src="file.url"
+              :alt="file.fileName"
+            />
+          </figure>
+        </li>
+      </ul>
+
+      <figure class="about__big">
+        <video
+          v-if="content.mediaBig.type === 'video'"
+          autoplay
+          playsinline
+          loop
+        >
+          <source
+            :src="content.mediaBig.url"
+            :type="content.mediaBig.contentType"
           />
-        </figure>
-      </li>
-    </ul>
+        </video>
 
-    <figure class="about__big">
-      <video v-if="content.mediaBig.type === 'video'" autoplay playsinline loop>
-        <source
+        <img
+          v-if="content.mediaBig.type === 'image'"
           :src="content.mediaBig.url"
-          :type="content.mediaBig.contentType"
+          :alt="content.mediaBig.fileName"
         />
-      </video>
 
-      <img
-        v-if="content.mediaBig.type === 'image'"
-        :src="content.mediaBig.url"
-        :alt="content.mediaBig.fileName"
-      />
-
-      <h1 class="about__title">
-        <span>No one there</span><span>get back</span>
-      </h1>
-    </figure>
+        <h1 class="about__title">
+          <span>No one there</span><span>get back</span>
+        </h1>
+      </figure>
+    </div>
 
     <Next to="/vision">
       <span slot="title">Vision</span>
@@ -171,13 +180,10 @@ export default {
 .credits-btn
   margin-bottom: 48px
 
-.about
+.about-container
   min-height: 100vh
   padding-top: 5.6vh
   padding-bottom: 10.5%
-
-  color: var(--color-text-dk)
-  background: var(--color-bg-dk)
 
   @media (max-width: 800px) and (min-height: 801px)
     padding-top: 240px
@@ -186,13 +192,6 @@ export default {
   @media (max-width: 800px) and (max-height: 800px)
     padding-top: 36vh
     padding-bottom: 48vh
-
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: var(--color-text-dk)
 
 .about__info
   padding-left: mix(3)

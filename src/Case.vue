@@ -138,8 +138,8 @@ export default {
     }
   },
   created() {
+    this.$emit('toggle-dark', false)
     this.setCase()
-    // this.$emit('toggle-dark', false)
   },
   destroyed() {
     loop.remove(this.setAsideHeight.bind(this), 'setAsideHeight')
@@ -269,12 +269,12 @@ export default {
 .case__content /deep/ a:hover > b::before
   transform: scaleX(0)
 
-.case__content /deep/ a
-  &,
-  &:visited,
-  &:active,
-  &:focus
-    color: var(--color-text-lt)
+// .case__content /deep/ a
+//   &,
+//   &:visited,
+//   &:active,
+//   &:focus
+//     color: var(--color-text-lt)
 
 .case__text + .case__box,
 .case__text + .case__row

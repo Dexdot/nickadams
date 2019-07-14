@@ -5,8 +5,9 @@ const enter = el =>
     anime({
       targets: el,
       duration: 800,
-      translateY: ['101%', '0%'],
+      // opacity: [0, 1],
       easing: 'easeInOutCirc',
+      translateY: ['101%', '0%'],
       begin: () => {
         el.style.willChange = 'transform'
       },
@@ -23,6 +24,7 @@ const leave = el =>
       targets: el,
       duration: 800,
       translateY: ['0%', '-101%'],
+      // translateX: ['0%', '-101%'],
       easing: 'easeInOutCirc',
       begin: () => {
         el.style.willChange = 'transform'

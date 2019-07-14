@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="page">
+  <div id="app" :class="['page', { dark: isDark }]">
     <Header
       :dark="isDark"
       :isHeaderActive="isHeaderActive"
@@ -120,8 +120,8 @@ export default {
       this.isCreditsActive = true
       this.isHeaderActive = true
     },
-    onToggle() {
-      // this.isDark = v
+    onToggle(v) {
+      this.isDark = v
     },
     onScroll({ deltaY }) {
       const scroll = this.scroll + -1 * deltaY
@@ -144,18 +144,17 @@ export default {
       done()
     },
     async leave(el, done) {
-      const cover = this.$refs.cover
+      // const cover = this.$refs.cover
 
       if (this.isMenuActive) this.toggleMenu()
 
       await transitions[this.dir.from.name].leave(el)
-      await transitions['cover'].enter(cover)
+      // await transitions['cover'].enter(cover)
 
-      this.isDark = transitions[this.dir.to.name].isDark
       this.scroll = 0
       this.translate = 0
 
-      await transitions['cover'].leave(cover)
+      // await transitions['cover'].leave(cover)
       done()
     }
   },
@@ -177,7 +176,20 @@ export default {
 </style>
 
 <style lang="sass" scoped>
-.page
+// .page
+  // color: var(--color-text-lt)
+  // background: var(--color-bg-lt)
+
+  // /deep/ a
+  //   &,
+  //   &:visited,
+  //   &:active,
+  //   &:focus
+  //     color: var(--color-text-lt)
+
+.page:not(.dark)
+  transition: background 0.5s ease-in-out
+
   color: var(--color-text-lt)
   background: var(--color-bg-lt)
 
@@ -187,6 +199,19 @@ export default {
     &:active,
     &:focus
       color: var(--color-text-lt)
+
+.page.dark
+  transition: background 0.5s ease-in-out
+
+  color: var(--color-text-dk)
+  background: var(--color-bg-dk)
+
+  /deep/ a
+    &,
+    &:visited,
+    &:active,
+    &:focus
+      color: var(--color-text-dk)
 
 .scroll-container
   width: 100vw
@@ -201,7 +226,10 @@ export default {
 
   width: 100vw
   height: 100vh
+  // background: var(--color-bg-lt)
   background: #000
 
+  // opacity: 0
+  // pointer-events: none
   transform: translateY(101%)
 </style>

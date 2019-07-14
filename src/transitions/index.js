@@ -7,24 +7,19 @@ const transitions = {
     ...Cover
   },
   main: {
-    ...Main,
-    isDark: false
+    ...Main
   },
   black: {
-    ...Main,
-    isDark: true
+    ...Main
   },
   case: {
-    ...Fade,
-    isDark: false
+    ...Fade
   },
   about: {
-    ...Fade,
-    isDark: true
+    ...Fade
   },
   vision: {
-    ...Fade,
-    isDark: true
+    ...Fade
   }
 }
 
