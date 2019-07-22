@@ -10,20 +10,28 @@
         :alt="project.cover.fields.title"
       />
 
-      <!-- client role date -->
-
       <section :style="[{ 'min-height': `${asideHeight}px` }]">
         <aside ref="aside">
-          <b>Client</b>
-          <p>{{ project.client }}</p>
-          <b>Role</b>
-          <p>{{ project.role }}</p>
-          <b>Date</b>
-          <p>{{ project.date }}</p>
-          <template v-if="project.awards">
-            <b>Awards</b>
-            <p>{{ awards }}</p>
-          </template>
+          <ul>
+            <li>
+              <b>Client</b>
+              <p>{{ project.client }}</p>
+            </li>
+            <li>
+              <b>Role</b>
+              <p>{{ project.role }}</p>
+            </li>
+            <li>
+              <b>Date</b>
+              <p>{{ project.date }}</p>
+            </li>
+            <template v-if="project.awards">
+              <li>
+                <b>Awards</b>
+                <p>{{ awards }}</p>
+              </li>
+            </template>
+          </ul>
         </aside>
 
         <ul class="case__content">
@@ -101,12 +109,20 @@
         </li>
       </ul>
     </article>
+
+    <Next v-if="project && nextCase" :to="`/case/${nextCase.slug}`">
+      <span slot="title">{{ nextCase.title }}</span>
+      <span slot="text">
+        {{ nextCase.subtitle }}
+      </span>
+    </Next>
   </main>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
+import Next from '@/Next'
 import CaseRow from '@/CaseRow'
 import CaseBox from '@/CaseBox'
 import loop from '@/scripts/loop'
@@ -117,6 +133,7 @@ import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 export default {
   name: 'Case',
   components: {
+    Next,
     CaseRow,
     CaseBox
   },
@@ -124,7 +141,8 @@ export default {
     project: null,
     content: null,
     boxColor: '#DDDDDD',
-    asideHeight: 100
+    asideHeight: 100,
+    nextCase: null
   }),
   computed: {
     ...mapGetters(['blackCases', 'mainCases']),
@@ -137,9 +155,11 @@ export default {
       return result
     }
   },
-  created() {
+  async created() {
     this.$emit('toggle-dark', false)
-    this.setCase()
+    await this.setCase()
+    this.setNextCase()
+    this.observe()
   },
   destroyed() {
     loop.remove(this.setAsideHeight.bind(this), 'setAsideHeight')
@@ -163,7 +183,9 @@ export default {
       })
 
       // Тянем из API
-      if (!this.project) this.project = await fetchCase(slug)
+      if (!this.project) {
+        this.project = await fetchCase(slug)
+      }
 
       // Rich content
       this.content = this.project.content.content
@@ -172,6 +194,37 @@ export default {
       if (this.project.boxColor) this.boxColor = this.project.boxColor
 
       loop.add(this.setAsideHeight.bind(this), 'setAsideHeight')
+    },
+    setNextCase() {
+      const cases = [...this.blackCases, ...this.mainCases].filter(
+        v => v.slug !== this.$route.params.id
+      )
+      const { title, subtitle, slug } = cases[
+        Math.floor(Math.random() * cases.length)
+      ]
+      this.nextCase = {
+        title,
+        subtitle,
+        slug
+      }
+    },
+    observe() {
+      const elements = this.$el.querySelectorAll(`.case__title,
+      .case__title + p,
+      .case__img,
+      .case aside li,
+      .case__content > li,
+      .case__footer > li`)
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible')
+        })
+      })
+
+      elements.forEach(el => {
+        observer.observe(el)
+      })
     },
     render: item => documentToHtmlString(item),
     isText: item => item.nodeType === 'paragraph',
@@ -182,6 +235,13 @@ export default {
     isBox: item =>
       item.nodeType === 'embedded-entry-block' &&
       item.data.target.sys.contentType.sys.id === 'box'
+  },
+  watch: {
+    async $route() {
+      this.project = null
+      await this.setCase()
+      this.setNextCase()
+    }
   }
 }
 </script>
@@ -269,13 +329,6 @@ export default {
 .case__content /deep/ a:hover > b::before
   transform: scaleX(0)
 
-// .case__content /deep/ a
-//   &,
-//   &:visited,
-//   &:active,
-//   &:focus
-//     color: var(--color-text-lt)
-
 .case__text + .case__box,
 .case__text + .case__row
   margin-top: 8.3%
@@ -289,7 +342,6 @@ export default {
   display: block
   width: 100vw
   height: auto
-  // margin: 6.3% 0 6.3% calc(-1 * #{mix(2)} - #{var(--unit)})
   margin: 10.4% 0 10.4% calc(-1 * #{mix(2)} - #{var(--unit)})
 
   @media (max-width: 900px)
@@ -324,23 +376,20 @@ export default {
   opacity: 0.1
 
 .case__footer-col:first-child
-  margin-right: gutters(1)
+  // margin-right: gutters(1)
 
-  @media (max-width: 900px)
-    margin-right: 16px
+  // @media (max-width: 900px)
+  //   margin-right: 16px
 
   @media (max-width: 700px)
     margin-right: 0
+    width: column-spans(3)
 
 .case__footer-col
   width: column-spans(4)
 
   @media (max-width: 900px)
     width: column-spans(5)
-
-.case__footer-col:first-child
-  @media (max-width: 700px)
-    width: column-spans(3)
 
 .case__footer-col:last-child
   @media (max-width: 700px)
@@ -363,6 +412,32 @@ aside
     max-width: 80%
     float: unset
 
-.case aside p
+.case aside li
   margin-bottom: 32px
+
+// OBSERVE ANIMATION
+.case__title,
+.case__title + p,
+.case__img,
+.case aside li,
+.case__content > li,
+.case__footer > li
+  opacity: 0
+  transition: .9s cubic-bezier(.215,.61,.355,1)
+
+  &.visible
+    opacity: 1
+
+.case aside li,
+.case__footer > li
+  transform: translateY(16px)
+
+  &.visible
+    transform: translateY(0)
+
+@for $i from 1 through 4
+  .case aside li,
+  .case__footer > li
+    &:nth-child(#{$i})
+      transition: 0.4s cubic-bezier(.25,.1,.25,1) (#{$i*0.05s})
 </style>

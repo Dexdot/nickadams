@@ -154,4 +154,18 @@ export default {
   &:active,
   &:focus
     color: #fff
+
+// HOVER
+.credits__nav
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.credits__nav li
+  transition: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)
+
+.credits__nav ul:hover li
+  opacity: 0.3
+.credits__nav ul li:hover
+  opacity: 1
 </style>

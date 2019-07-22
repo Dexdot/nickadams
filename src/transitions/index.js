@@ -1,11 +1,7 @@
-import Cover from './Cover'
 import Main from './Main'
-import Fade from './Case'
+import Fade from './Fade'
 
 const transitions = {
-  cover: {
-    ...Cover
-  },
   main: {
     ...Main
   },

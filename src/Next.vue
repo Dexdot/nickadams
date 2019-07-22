@@ -15,7 +15,7 @@
 export default {
   name: 'Next',
   props: {
-    to: { type: String, default: '/' },
+    to: { type: [String, Object], default: '/' },
     isLight: { type: Boolean, default: false }
   }
 }

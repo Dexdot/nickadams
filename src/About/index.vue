@@ -26,7 +26,7 @@
             </li>
           </ul>
 
-          <ul>
+          <ul class="about__social">
             <li>
               <a href="https://behance.net/stereocage" target="_blank"
                 >Behance</a
@@ -55,7 +55,7 @@
       </section>
 
       <button class="credits-btn" @click="$emit('credits-click')" type="button">
-        Credits
+        <span>Credits</span>
       </button>
 
       <ul class="about__list u-flex">
@@ -76,6 +76,7 @@
 
       <figure class="about__big">
         <video
+          class="about__big-inner"
           v-if="content.mediaBig.type === 'video'"
           autoplay
           playsinline
@@ -88,6 +89,7 @@
         </video>
 
         <img
+          class="about__big-inner"
           v-if="content.mediaBig.type === 'image'"
           :src="content.mediaBig.url"
           :alt="content.mediaBig.fileName"
@@ -167,7 +169,34 @@ export default {
             ...fields.mediaBig.fields.file,
             type: fields.mediaBig.fields.file.contentType.split('/')[0]
           }
+
+          // Observe
+          this.$nextTick(() => {
+            this.observe()
+          })
         })
+    },
+    observe() {
+      const elements = this.$el.querySelectorAll(`
+        .about__text > p,
+        .sign,
+        .about__contact > p,
+        .about__contact li,
+        .credits-btn,
+        .about__list li,
+        .about__big-inner,
+        .about__title
+        `)
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible')
+        })
+      })
+
+      elements.forEach(el => {
+        observer.observe(el)
+      })
     },
     render: item => documentToHtmlString(item)
   }
@@ -309,9 +338,50 @@ export default {
 
     white-space: nowrap
 
-
 .sign
   margin-top: 24px
   width: 182px
   height: auto
+
+
+// HOVER
+.about__social
+  display: inline-flex
+  flex-direction: column
+  align-items: flex-start
+.about__social a
+  transition: .4s cubic-bezier(.25,.1,.25,1)
+.about__social:hover a
+  opacity: 0.3
+.about__social a:hover
+  opacity: 1
+
+
+// OBSERVER ANIMATION
+.about__text > p,
+.sign,
+.about__contact > p,
+.about__contact li,
+.credits-btn,
+.about__list li,
+.about__big-inner,
+.about__title
+  opacity: 0
+  transition: .9s cubic-bezier(.215,.61,.355,1)
+
+  &.visible
+    opacity: 1
+
+.about__contact li
+  transform: translateY(16px)
+
+  &.visible
+    transform: translateY(0)
+
+@for $i from 1 through 10
+  .about__text > p,
+  .about__contact li,
+  .about__list li
+    &:nth-child(#{$i})
+      transition: 0.8s cubic-bezier(.25,.1,.25,1) (#{$i*0.1s})
 </style>

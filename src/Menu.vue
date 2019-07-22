@@ -220,12 +220,12 @@ export default {
 .menu__nav:hover
   .menu__link:not(.router-link-exact-active),
   .menu__link.router-link-exact-active
-    opacity: 0.3
+    opacity: 1
 
 .menu__nav
   .menu__link:not(.router-link-exact-active):hover,
   .menu__link.router-link-exact-active:hover
-    opacity: 1
+    opacity: 0.3
 
 .menu__social a:hover
   opacity: 1

@@ -10,8 +10,8 @@
         ></p>
       </article>
 
-      <div class="vision-counter">
-        {{ activeSlide + 1 }} / {{ slides.length }}
+      <div class="vision-counter" ref="counter">
+        <span>{{ activeSlide + 1 }} / {{ slides.length }}</span>
       </div>
     </section>
 
@@ -63,11 +63,12 @@ export default {
           this.slides = [...this.getSlides(fields)]
 
           this.$nextTick(() => {
-            const { quotes } = this.$refs
+            const { quotes, counter } = this.$refs
             if (!quotes) return false
 
             setTimeout(() => {
               quotes.classList.add('blur')
+              counter.classList.add('visible')
             }, 200)
 
             setTimeout(() => {
@@ -123,7 +124,19 @@ export default {
 <style lang="sass" scoped>
 @import "~@/sass/utils"
 
+.vision-counter span
+  display: block
+  transform: translateY(100%)
+  opacity: 0
+  transition: opacity 1s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)
+
+.vision-counter.visible span
+  transform: translateY(0)
+  opacity: 1
+
 .vision-counter
+  overflow: hidden
+
   position: absolute
   bottom: 6%
   right: var(--unit)

@@ -6,7 +6,8 @@ const enter = el =>
       targets: el,
       duration: 600,
       opacity: [0, 1],
-      easing: 'easeOutSine',
+      // easing: 'easeOutSine',
+      easing: 'cubicBezier(.25,.01,.25,1)',
       begin: () => {
         el.style.willChange = 'opacity'
       },
@@ -26,7 +27,8 @@ const leave = el =>
       targets: el,
       duration: 600,
       opacity: [1, 0],
-      easing: 'easeInOutSine',
+      // easing: 'easeInOutSine',
+      easing: 'cubicBezier(.25,.01,.25,1)',
       begin: () => {
         el.style.willChange = 'opacity'
       },

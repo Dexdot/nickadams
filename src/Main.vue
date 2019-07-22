@@ -1,14 +1,28 @@
 <template>
-  <!-- <main :class="['main', { dark: isDark }]"> -->
   <main class="main">
     <h1
-      class="t-h1"
+      v-if="isDesktop"
+      class="main-title t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
       ref="title"
     ></h1>
+    <h1
+      v-else
+      class="main-title-mob t-h1"
+      :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
+      ref="title-mob"
+    >
+      {{ titleMob }}
+    </h1>
 
     <ul class="cases">
-      <li class="case" v-for="project in cases" :key="project.slug">
+      <li
+        class="case"
+        ref="cases"
+        :data-title="project.title"
+        v-for="project in cases"
+        :key="project.slug"
+      >
         <ul>
           <li
             v-for="(img, i) in project.covers"
@@ -29,7 +43,7 @@
       </li>
     </ul>
 
-    <router-link :to="isDark ? '/' : '/black'">
+    <router-link style="display: block" :to="isDark ? '/' : '/black'">
       <Toggler
         :isDark="isDark"
         :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
@@ -61,15 +75,50 @@ export default {
     }
   },
   data: () => ({
-    chars: []
+    chars: [],
+    titleMob: ''
   }),
   computed: {
     ...mapGetters(['blackCases', 'mainCases']),
     cases() {
       return this.isDark ? this.blackCases : this.mainCases
-    }
+    },
+    isDesktop: () => window.innerWidth > 500
+  },
+  created() {
+    this.observeCases()
   },
   methods: {
+    observeCases() {
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            // Hide title if case is not visible
+            if (
+              !entry.isIntersecting &&
+              entry.target.dataset.title === this.title
+            ) {
+              this.showTitle(false)
+            }
+
+            // Set mobile title text
+            if (
+              entry.intersectionRatio >= 0.8 &&
+              entry.target.getBoundingClientRect().top >= innerHeight / 2
+            ) {
+              this.titleMob = entry.target.dataset.title
+            }
+          })
+        },
+        { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
+      )
+
+      this.$nextTick(() => {
+        this.$refs.cases.forEach(v => {
+          observer.observe(v)
+        })
+      })
+    },
     mouseover(title) {
       if (!this.$refs.title) return false
 
@@ -90,7 +139,7 @@ export default {
 
       anime({
         targets: chars,
-        opacity: show ? [0, 1] : [1, 0],
+        opacity: show ? [0, 1] : 0,
         translateY: show ? ['40px', '0px'] : '0px',
         easing: 'easeOutQuart',
         duration: show ? 1000 : 600,
@@ -113,13 +162,13 @@ export default {
   @media (max-width: 500px)
     --unit-reg: 32px
 
-  --xs-w: 25.83vw
-  --xs-h: 37.5%
+  --xs-w: 27.084vw
+  --xs-h: 41.667%
   @media (max-width: 500px)
     --xs-w: 58.67vw
     --xs-h: 85.335%
 
-  --s-w: 32vw
+  --s-w: 29.167vw
   --s-h: 41.75%
   @media (max-width: 500px)
     --s-w: 53.333vw
@@ -172,33 +221,7 @@ $mob-mb: 28%
 .main
   min-height: 100vh
 
-// .main:not(.dark)
-//   transition: background 0.5s ease-in-out
-
-//   color: var(--color-text-lt)
-//   background: var(--color-bg-lt)
-
-//   /deep/ a
-//     &,
-//     &:visited,
-//     &:active,
-//     &:focus
-//       color: var(--color-text-lt)
-
-// .main.dark
-//   transition: background 0.5s ease-in-out
-
-//   color: var(--color-text-dk)
-//   background: var(--color-bg-dk)
-
-//   /deep/ a
-//     &,
-//     &:visited,
-//     &:active,
-//     &:focus
-//       color: var(--color-text-dk)
-
-h1
+.main-title
   pointer-events: none
   z-index: 1
   position: fixed
@@ -213,6 +236,20 @@ h1
     min-width: 0.3em
     display: inline-block
     will-change: transform, opacity
+
+.main-title-mob
+  pointer-events: none
+  z-index: 1
+  position: fixed
+  top: 50vh
+  left: 50vw
+
+  text-align: center
+  width: 100%
+  margin-top: -0.5em
+  display: none
+  @media (max-width: 500px)
+    display: block
 
 
 .img
@@ -390,9 +427,11 @@ h1
 
   li:nth-child(1) .img
     width: $xxl-w
-    padding-bottom: 30%
+    padding-bottom: 40.77%
+    // padding-bottom: 30%
     @media (max-width: 500px)
-      padding-bottom: 42%
+      padding-bottom: 41.983%
+      // padding-bottom: 42%
 
   li:nth-child(2)
     position: absolute
@@ -405,10 +444,11 @@ h1
 
   li:nth-child(2) .img
     width: $m-w
-    padding-bottom: 64.85%
+    padding-bottom: 56.25%
+    // padding-bottom: 64.85%
 
-    @media (max-width: 500px)
-      padding-bottom: 59.4%
+    // @media (max-width: 500px)
+    //   padding-bottom: 59.4%
 
 .case:nth-child(12)
   margin-bottom: 10.4%

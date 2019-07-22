@@ -23,8 +23,6 @@
         </transition>
       </div>
     </div>
-
-    <div class="transition-cover" ref="cover"></div>
   </div>
 </template>
 
@@ -144,23 +142,23 @@ export default {
       done()
     },
     async leave(el, done) {
-      // const cover = this.$refs.cover
-
       if (this.isMenuActive) this.toggleMenu()
 
       await transitions[this.dir.from.name].leave(el)
-      // await transitions['cover'].enter(cover)
 
       this.scroll = 0
       this.translate = 0
 
-      // await transitions['cover'].leave(cover)
       done()
     }
   },
   watch: {
     $route(to, from) {
       this.dir = { to, from }
+
+      if (from.name === to.name) {
+        this.scroll = 0
+      }
     }
   }
 }
@@ -176,17 +174,6 @@ export default {
 </style>
 
 <style lang="sass" scoped>
-// .page
-  // color: var(--color-text-lt)
-  // background: var(--color-bg-lt)
-
-  // /deep/ a
-  //   &,
-  //   &:visited,
-  //   &:active,
-  //   &:focus
-  //     color: var(--color-text-lt)
-
 .page:not(.dark)
   transition: background 0.5s ease-in-out
 
@@ -218,18 +205,4 @@ export default {
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
-
-.transition-cover
-  position: fixed
-  top: 0
-  left: 0
-
-  width: 100vw
-  height: 100vh
-  // background: var(--color-bg-lt)
-  background: #000
-
-  // opacity: 0
-  // pointer-events: none
-  transform: translateY(101%)
 </style>
