@@ -16,6 +16,7 @@
       >
         <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
           <router-view
+            :scrollDelta="deltaY"
             :scroll="translate"
             @credits-click="onCreditsBtnClick"
             @toggle-dark="onToggle"
@@ -56,6 +57,7 @@ export default {
     isDark: false,
     scroll: 0,
     translate: 0,
+    deltaY: 0,
     vs: null,
     winHeight: 0,
     dir: {}
@@ -122,6 +124,7 @@ export default {
       this.isDark = v
     },
     onScroll({ deltaY }) {
+      this.deltaY = deltaY
       const scroll = this.scroll + -1 * deltaY
 
       this.scroll = Math.min(

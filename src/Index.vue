@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Main :isDark="false" :scroll="scroll" />
+  <div v-if="$store.getters.mainCases.length > 0">
+    <Main :isDark="false" :scroll="scroll" :scrollDelta="scrollDelta" />
     <Next to="/about">
       <span slot="title">About</span>
       <span slot="text"
@@ -22,6 +22,10 @@ export default {
   },
   props: {
     scroll: {
+      type: Number,
+      default: 0
+    },
+    scrollDelta: {
       type: Number,
       default: 0
     }

@@ -34,8 +34,25 @@
               @mouseover.native="mouseover(project.title, i)"
               @mouseout.native="mouseout"
             >
-              <div class="img__i">
-                <img :src="img.fields.file.url" :alt="project.title" />
+              <div class="img__i" :data-kek="img.fields.type">
+                <video
+                  v-if="img.fields.type === 'video'"
+                  autoplay
+                  playsinline
+                  loop
+                  muted
+                >
+                  <source
+                    :src="img.fields.file.url"
+                    :type="img.fields.contentType"
+                  />
+                </video>
+
+                <img
+                  v-if="img.fields.type === 'image'"
+                  :src="img.fields.file.url"
+                  :alt="project.title"
+                />
               </div>
             </router-link>
           </li>
@@ -69,6 +86,10 @@ export default {
       type: Number,
       default: 0
     },
+    scrollDelta: {
+      type: Number,
+      default: 0
+    },
     isDark: {
       type: Boolean,
       default: false
@@ -85,7 +106,7 @@ export default {
     },
     isDesktop: () => window.innerWidth > 500
   },
-  created() {
+  mounted() {
     this.observeCases()
   },
   methods: {
@@ -102,21 +123,20 @@ export default {
             }
 
             // Set mobile title text
-            if (
-              entry.intersectionRatio >= 0.8 &&
-              entry.target.getBoundingClientRect().top >= innerHeight / 2
-            ) {
+            const dir = this.scrollDelta > 0 ? 'up' : 'down'
+            const scrollCondition =
+              dir === 'down'
+                ? entry.target.getBoundingClientRect().top >= innerHeight / 2
+                : entry.target.getBoundingClientRect().top <= innerHeight / 2.5
+            if (entry.intersectionRatio >= 0.9 && scrollCondition) {
               this.titleMob = entry.target.dataset.title
             }
           })
         },
         { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
       )
-
-      this.$nextTick(() => {
-        this.$refs.cases.forEach(v => {
-          observer.observe(v)
-        })
+      this.$refs.cases.forEach(v => {
+        observer.observe(v)
       })
     },
     mouseover(title) {
@@ -267,7 +287,8 @@ $mob-mb: 28%
   overflow: hidden
   transform: scaleX(1)
 
-.img img
+.img img,
+.img video
   width: 100%
   height: 100%
   object-fit: cover
@@ -276,7 +297,8 @@ $mob-mb: 28%
 
 .case li:first-child .img:hover
   transform: scale3d(.95,.95,1)
-  img
+  img,
+  video
     transform: scale3d(1.15,1.15,1)
 
 
@@ -393,7 +415,6 @@ $mob-mb: 28%
       margin-right: $unit-reg
       width: 59.73vw
       padding-bottom: 59.73vw
-
 
 .case:nth-child(7)
   margin-bottom: 10.4%

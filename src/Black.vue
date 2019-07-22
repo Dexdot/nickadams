@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Main :isDark="true" :scroll="scroll" />
+  <div v-if="$store.getters.blackCases.length > 0">
+    <Main :isDark="true" :scroll="scroll" :scrollDelta="scrollDelta" />
     <Next to="/" :isLight="true">
       <span slot="title">There will be light</span>
       <span slot="text"
@@ -22,6 +22,10 @@ export default {
   },
   props: {
     scroll: {
+      type: Number,
+      default: 0
+    },
+    scrollDelta: {
       type: Number,
       default: 0
     }

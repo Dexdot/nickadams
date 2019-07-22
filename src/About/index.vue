@@ -54,14 +54,14 @@
         </div>
       </section>
 
-      <button class="credits-btn" @click="$emit('credits-click')" type="button">
+      <!-- <button class="credits-btn" @click="$emit('credits-click')" type="button">
         <span>Credits</span>
-      </button>
+      </button> -->
 
       <ul class="about__list u-flex">
         <li v-for="file in content.mediaList" :key="file.url">
           <figure class="about__img">
-            <video v-if="file.type === 'video'" autoplay playsinline loop>
+            <video v-if="file.type === 'video'" muted autoplay playsinline loop>
               <source :src="file.url" :type="file.contentType" />
             </video>
 
@@ -101,16 +101,23 @@
       </figure>
     </div>
 
-    <Next to="/vision">
+    <Next class="about-next" to="/vision">
       <span slot="title">Vision</span>
       <span slot="text"
         >Jamie then returned home to set up his own product
       </span>
     </Next>
+
+    <CreditsButton
+      class="about-credits"
+      @credits-click="$emit('credits-click')"
+      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+    />
   </main>
 </template>
 
 <script>
+import CreditsButton from '@/CreditsButton'
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
@@ -119,7 +126,14 @@ import Next from '@/Next'
 export default {
   name: 'About',
   components: {
-    Next
+    Next,
+    CreditsButton
+  },
+  props: {
+    scroll: {
+      type: Number,
+      default: 0
+    }
   },
   data: () => ({
     content: {
@@ -182,7 +196,7 @@ export default {
         .sign,
         .about__contact > p,
         .about__contact li,
-        .credits-btn,
+        .about-credits,
         .about__list li,
         .about__big-inner,
         .about__title
@@ -206,8 +220,9 @@ export default {
 <style lang="sass" scoped>
 @import "~@/sass/utils"
 
-.credits-btn
-  margin-bottom: 48px
+.about-next
+  position: relative
+  z-index: 1
 
 .about-container
   min-height: 100vh
@@ -362,12 +377,18 @@ export default {
 .sign,
 .about__contact > p,
 .about__contact li,
-.credits-btn,
 .about__list li,
 .about__big-inner,
 .about__title
   opacity: 0
   transition: .9s cubic-bezier(.215,.61,.355,1)
+
+  &.visible
+    opacity: 1
+
+.about-credits
+  opacity: 0
+  transition: opacity .9s cubic-bezier(.215,.61,.355,1)
 
   &.visible
     opacity: 1

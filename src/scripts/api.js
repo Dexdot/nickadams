@@ -13,8 +13,16 @@ export const fetchCases = ctx => {
   // Get black
   client.getEntry(BLACK_ID).then(({ fields }) => {
     const cases = []
+
     fields.list.forEach(v => {
-      cases.push(v.fields)
+      const proj = { ...v.fields }
+
+      // Set content type
+      proj.covers.forEach(cover => {
+        cover.fields.type = cover.fields.file.contentType.split('/')[0]
+      })
+
+      cases.push(proj)
     })
 
     ctx.$store.dispatch('setCases', { black: true, cases })
@@ -23,8 +31,16 @@ export const fetchCases = ctx => {
   // Get main
   client.getEntry(MAIN_ID).then(({ fields }) => {
     const cases = []
+
     fields.list.forEach(v => {
-      cases.push(v.fields)
+      const proj = { ...v.fields }
+
+      // Set content type
+      proj.covers.forEach(cover => {
+        cover.fields.type = cover.fields.file.contentType.split('/')[0]
+      })
+
+      cases.push(proj)
     })
 
     ctx.$store.dispatch('setCases', { black: false, cases })

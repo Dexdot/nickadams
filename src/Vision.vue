@@ -15,16 +15,23 @@
       </div>
     </section>
 
-    <Next to="/black">
+    <Next class="vision-next" to="/black">
       <span slot="title">Black</span>
       <span slot="text"
         >Jamie then returned home to set up his own product
       </span>
     </Next>
+
+    <CreditsButton
+      class="about-credits"
+      @credits-click="$emit('credits-click')"
+      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+    />
   </main>
 </template>
 
 <script>
+import CreditsButton from '@/CreditsButton'
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
@@ -33,7 +40,14 @@ import Next from '@/Next'
 export default {
   name: 'Vision',
   components: {
-    Next
+    Next,
+    CreditsButton
+  },
+  props: {
+    scroll: {
+      type: Number,
+      default: 0
+    }
   },
   data: () => ({
     slides: [],
@@ -124,6 +138,10 @@ export default {
 <style lang="sass" scoped>
 @import "~@/sass/utils"
 
+.vision-next
+  position: relative
+  z-index: 1
+
 .vision-counter span
   display: block
   transform: translateY(100%)
@@ -155,7 +173,7 @@ export default {
 
 .vision-container p
   line-height: 1.4444
-  +yo('font-size', (375px: 24px, 1920px: 36px))
+  +yo('font-size', (320px: 20px, 375px: 24px, 1920px: 36px))
   text-align: center
 
   max-width: column-spans(8)
