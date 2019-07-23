@@ -41,7 +41,9 @@ export default {
   display: flex
   flex-wrap: wrap
 
-  width: 16px
+  // width: 16px
+  width: 24px
+  height: 24px
   margin-left: -4px
   margin-top: -4px
 
@@ -53,6 +55,9 @@ export default {
 
 .menu-btn.active
   transform: rotate(45deg)
+
+.menu-btn__circle:nth-child(2)
+  margin-right: 30%
 
 .menu-btn__circle
   background: var(--color-text-lt)

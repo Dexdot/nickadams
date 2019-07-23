@@ -1,7 +1,17 @@
 <template>
   <div v-if="$store.getters.blackCases.length > 0">
-    <Main :isDark="true" :scroll="scroll" :scrollDelta="scrollDelta" />
-    <Next to="/" :isLight="true">
+    <Main
+      :isNextVisible="isNextVisible"
+      :isDark="true"
+      :scroll="scroll"
+      :scrollDelta="scrollDelta"
+    />
+    <Next
+      @visible="isNextVisible = true"
+      @invisible="isNextVisible = false"
+      to="/"
+      :isLight="true"
+    >
       <span slot="title">There will be light</span>
       <span slot="text"
         >Jamie then returned home to set up his own product
@@ -20,6 +30,9 @@ export default {
     Main,
     Next
   },
+  data: () => ({
+    isNextVisible: false
+  }),
   props: {
     scroll: {
       type: Number,

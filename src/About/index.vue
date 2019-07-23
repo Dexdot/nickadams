@@ -51,6 +51,12 @@
               <a href="https://github.com/Dexdot" target="_blank">Github</a>
             </li>
           </ul>
+
+          <CreditsButton
+            class="about-credits"
+            @credits-click="$emit('credits-click')"
+            :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+          />
         </div>
       </section>
 
@@ -107,12 +113,6 @@
         >Jamie then returned home to set up his own product
       </span>
     </Next>
-
-    <CreditsButton
-      class="about-credits"
-      @credits-click="$emit('credits-click')"
-      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
-    />
   </main>
 </template>
 
@@ -336,7 +336,8 @@ export default {
   writing-mode: vertical-lr
   transform: rotate(-180deg) translateX(calc(#{gutters(1)} * -1))
 
-  display: flex
+  display: none
+  // display: flex
   flex-direction: column-reverse
   align-items: flex-end
 
@@ -393,16 +394,23 @@ export default {
   &.visible
     opacity: 1
 
-.about__contact li
-  transform: translateY(16px)
+  @media (max-width: 500px)
+    opacity: 1
+    position: static
+    display: block
+    margin-top: 32px
+    transform: translateY(0) !important
 
-  &.visible
-    transform: translateY(0)
+// .about__contact li
+//   transform: translateY(16px)
 
-@for $i from 1 through 10
-  .about__text > p,
-  .about__contact li,
-  .about__list li
-    &:nth-child(#{$i})
-      transition: 0.8s cubic-bezier(.25,.1,.25,1) (#{$i*0.1s})
+//   &.visible
+//     transform: translateY(0)
+
+// @for $i from 1 through 10
+//   .about__text > p,
+//   .about__contact li,
+//   .about__list li
+//     &:nth-child(#{$i})
+//       transition: 0.8s cubic-bezier(.25,.1,.25,1) (#{$i*0.05s})
 </style>

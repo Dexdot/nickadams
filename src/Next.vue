@@ -17,6 +17,21 @@ export default {
   props: {
     to: { type: [String, Object], default: '/' },
     isLight: { type: Boolean, default: false }
+  },
+  mounted() {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.intersectionRatio >= 0.3) {
+            this.$emit('visible')
+          } else {
+            this.$emit('invisible')
+          }
+        })
+      },
+      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
+    )
+    observer.observe(this.$el)
   }
 }
 </script>

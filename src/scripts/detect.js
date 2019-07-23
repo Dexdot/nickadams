@@ -23,3 +23,6 @@ export const isSafari = () =>
   navigator.userAgent.indexOf('Safari') != -1 &&
   navigator.userAgent.indexOf('Chrome') == -1 &&
   !isMobileDevice()
+
+export const isMACOS = () =>
+  navigator.platform.toUpperCase().indexOf('MAC') >= 0

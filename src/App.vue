@@ -35,9 +35,10 @@ import Menu from '@/Menu'
 import Credits from '@/Credits'
 
 import loop from '@/scripts/loop'
-import { isSafari } from '@/scripts/detect'
+import { isSafari, isMACOS } from '@/scripts/detect'
 
 import transitions from '@/transitions/'
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
@@ -51,6 +52,7 @@ export default {
     Credits
   },
   data: () => ({
+    isHeaderVisible: false,
     isHeaderActive: false,
     isMenuActive: false,
     isCreditsActive: false,
@@ -63,6 +65,13 @@ export default {
     dir: {}
   }),
   mounted() {
+    if (isMACOS()) {
+      document.querySelector('body').classList.add('is-macos')
+    }
+    if (isSafari()) {
+      document.querySelector('body').classList.add('is-safari')
+    }
+
     // Window height
     this.getWinHeight()
     window.addEventListener('resize', this.getWinHeight.bind(this))
@@ -91,6 +100,7 @@ export default {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
 
     if (isSafari()) {
+      // document.querySelector('body').remove('is-safari')
       window.removeEventListener('scroll', this.scrollSafari.bind(this))
     } else {
       this.vs.off(this.onScroll)
@@ -124,6 +134,8 @@ export default {
       this.isDark = v
     },
     onScroll({ deltaY }) {
+      this.isHeaderVisible = false
+
       this.deltaY = deltaY
       const scroll = this.scroll + -1 * deltaY
 
@@ -151,6 +163,7 @@ export default {
 
       this.scroll = 0
       this.translate = 0
+      window.scrollTo(0, 0)
 
       done()
     }
@@ -160,7 +173,13 @@ export default {
       this.dir = { to, from }
 
       if (from.name === to.name) {
-        this.scroll = 0
+        transitions[from.name]
+          .leave(document.querySelector('main'))
+          .then(() => {
+            this.translate = 0
+            this.scroll = 0
+            transitions[to.name].enter(document.querySelector('main'))
+          })
       }
     }
   }
@@ -174,6 +193,13 @@ export default {
 
   --color-text-dk: #FFFFFF
   --color-bg-dk: #000000
+
+body.is-macos:not(.is-safari)
+  overflow: hidden
+
+.is-safari .scroll-container
+  height: auto !important
+  overflow: unset !important
 </style>
 
 <style lang="sass" scoped>
@@ -205,6 +231,7 @@ export default {
 
 .scroll-container
   width: 100vw
+.scroll-container
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden

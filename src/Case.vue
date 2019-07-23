@@ -257,6 +257,7 @@ export default {
   margin-left: auto
   margin-right: auto
   width: column-spans(8)
+  min-height: 100vh
   padding-top: 11.5%
   padding-bottom: 10.5%
 

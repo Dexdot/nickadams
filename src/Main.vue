@@ -7,6 +7,7 @@
       ref="title"
     ></h1>
     <h1
+      v-show="!isNextVisible"
       v-else
       class="main-title-mob t-h1"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
@@ -93,6 +94,10 @@ export default {
     isDark: {
       type: Boolean,
       default: false
+    },
+    isNextVisible: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -128,7 +133,7 @@ export default {
               dir === 'down'
                 ? entry.target.getBoundingClientRect().top >= innerHeight / 2
                 : entry.target.getBoundingClientRect().top <= innerHeight / 2.5
-            if (entry.intersectionRatio >= 0.9 && scrollCondition) {
+            if (entry.intersectionRatio >= 0.8 && scrollCondition) {
               this.titleMob = entry.target.dataset.title
             }
           })
@@ -170,6 +175,13 @@ export default {
       })
     }
   }
+  // watch: {
+  //   isNextVisible(isNextVisible) {
+  //     if (isNextVisible) {
+
+  //     }
+  //   }
+  // }
 }
 </script>
 
