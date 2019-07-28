@@ -31,7 +31,6 @@ const leave = (el, cb) =>
       // easing: 'easeInOutSine',
       easing: 'cubicBezier(.25,.01,.25,1)',
       begin: () => {
-        console.log(el)
         el.style.willChange = 'opacity'
       },
       complete: () => {

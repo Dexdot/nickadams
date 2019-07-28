@@ -107,7 +107,12 @@
       </figure>
     </div>
 
-    <Next class="about-next" to="/vision">
+    <Next
+      class="about-next"
+      to="/vision"
+      @toggle-dark="$emit('toggle-dark', $event)"
+      :pageDark="true"
+    >
       <span slot="title">Vision</span>
       <span slot="text"
         >Jamie then returned home to set up his own product

@@ -1,5 +1,10 @@
 <template>
-  <div :class="['toggler u-center', { visible }]">
+  <div
+    :class="[
+      'toggler u-center',
+      { visible: isTouch ? isNotScrolling : visible }
+    ]"
+  >
     <svg
       v-if="isDark"
       width="16"
@@ -99,12 +104,19 @@ import { isTouchDevice } from '@/scripts/detect'
 export default {
   name: 'Toggler',
   props: {
-    isDark: { type: Boolean, default: false }
+    isDark: { type: Boolean, default: false },
+    isNotScrolling: {
+      type: Boolean,
+      default: false
+    }
   },
   data: () => ({
     visible: false,
     timeout: null
   }),
+  computed: {
+    isTouch: () => isTouchDevice()
+  },
   mounted() {
     if (isTouchDevice()) this.visible = true
     window.addEventListener('mousemove', this.mousemove.bind(this))
@@ -131,9 +143,9 @@ export default {
   opacity: 0
   pointer-events: none
 
-  @media (max-width: 500px)
-    opacity: 1
-    pointer-events: none
+  // @media (max-width: 500px)
+  //   opacity: 1
+  //   pointer-events: none
 
 .toggler.visible
   opacity: 1

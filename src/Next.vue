@@ -1,5 +1,6 @@
 <template>
-  <section :class="['next', { light: isLight }]">
+  <!-- <section :class="['next', { light: !isDark }]"> -->
+  <section :class="['next']">
     <div class="next-container">
       <router-link :to="to">
         <h2 class="t-h2">
@@ -16,22 +17,30 @@ export default {
   name: 'Next',
   props: {
     to: { type: [String, Object], default: '/' },
-    isLight: { type: Boolean, default: false }
+    pageDark: { type: Boolean, default: true },
+    isDark: { type: Boolean, default: true }
   },
   mounted() {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.intersectionRatio >= 0.3) {
-            this.$emit('visible')
-          } else {
-            this.$emit('invisible')
-          }
-        })
-      },
-      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
-    )
-    observer.observe(this.$el)
+    this.observe()
+  },
+  methods: {
+    observe() {
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.$emit('intersect', entry)
+              this.$emit('toggle-dark', this.isDark)
+            } else {
+              this.$emit('notintersect', entry)
+              this.$emit('toggle-dark', this.pageDark)
+            }
+          })
+        },
+        { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
+      )
+      observer.observe(this.$el)
+    }
   }
 }
 </script>
@@ -39,27 +48,27 @@ export default {
 <style lang="sass" scoped>
 @import "~@/sass/utils"
 
-.next
-  background: #000
-  color: #fff
+// .next
+//   background: #000
+//   color: #fff
 
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: #fff !important
+//   /deep/ a
+//     &,
+//     &:visited,
+//     &:active,
+//     &:focus
+//       color: #fff !important
 
-.next.light
-  color: var(--color-text-lt)
-  background: var(--color-bg-lt)
+// .next.light
+//   color: var(--color-text-lt)
+//   background: var(--color-bg-lt)
 
-  /deep/ a
-    &,
-    &:visited,
-    &:active,
-    &:focus
-      color: var(--color-text-lt) !important
+//   /deep/ a
+//     &,
+//     &:visited,
+//     &:active,
+//     &:focus
+//       color: var(--color-text-lt) !important
 
 
 .next

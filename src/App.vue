@@ -3,6 +3,7 @@
     <Header
       :dark="isDark"
       :isHeaderActive="isHeaderActive"
+      :isHeaderVisible="isNotScrolling"
       @menu-btn-click="toggleMenu"
     />
     <Menu :active="isMenuActive" />
@@ -18,6 +19,7 @@
           <router-view
             :scrollDelta="deltaY"
             :scroll="translate"
+            :isNotScrolling="isNotScrolling"
             @credits-click="onCreditsBtnClick"
             @toggle-dark="onToggle"
           />
@@ -38,7 +40,6 @@ import loop from '@/scripts/loop'
 import { isSafari, isMACOS } from '@/scripts/detect'
 
 import transitions from '@/transitions/'
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
@@ -52,7 +53,7 @@ export default {
     Credits
   },
   data: () => ({
-    isHeaderVisible: false,
+    isNotScrolling: false,
     isHeaderActive: false,
     isMenuActive: false,
     isCreditsActive: false,
@@ -134,7 +135,8 @@ export default {
       this.isDark = v
     },
     onScroll({ deltaY }) {
-      this.isHeaderVisible = false
+      if (!this.isMenuActive && !this.isCreditsActive)
+        this.isNotScrolling = false
 
       this.deltaY = deltaY
       const scroll = this.scroll + -1 * deltaY
@@ -145,8 +147,19 @@ export default {
       )
     },
     checkSmooth() {
-      if (Math.round(this.scroll) !== Math.round(this.translate)) {
+      const roundTranslate = Math.round(this.translate)
+      const roundScroll = Math.round(this.scroll)
+
+      if (roundScroll !== roundTranslate) {
         this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
+      }
+
+      // Show header after scroll stops
+      if (
+        roundTranslate >= roundScroll - 100 &&
+        roundTranslate <= roundScroll + 100
+      ) {
+        this.isNotScrolling = true
       }
     },
     scrollSafari() {
@@ -173,6 +186,7 @@ export default {
       this.dir = { to, from }
 
       if (from.name === to.name) {
+        // case => case
         transitions[from.name]
           .leave(document.querySelector('main'))
           .then(() => {
@@ -231,6 +245,7 @@ body.is-macos:not(.is-safari)
 
 .scroll-container
   width: 100vw
+
 .scroll-container
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)

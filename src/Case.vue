@@ -110,7 +110,12 @@
       </ul>
     </article>
 
-    <Next v-if="project && nextCase" :to="`/case/${nextCase.slug}`">
+    <Next
+      v-if="project && nextCase"
+      :to="`/case/${nextCase.slug}`"
+      @toggle-dark="$emit('toggle-dark', $event)"
+      :pageDark="false"
+    >
       <span slot="title">{{ nextCase.title }}</span>
       <span slot="text">
         {{ nextCase.subtitle }}
@@ -196,12 +201,21 @@ export default {
       loop.add(this.setAsideHeight.bind(this), 'setAsideHeight')
     },
     setNextCase() {
-      const cases = [...this.blackCases, ...this.mainCases].filter(
-        v => v.slug !== this.$route.params.id
-      )
-      const { title, subtitle, slug } = cases[
-        Math.floor(Math.random() * cases.length)
+      let caseList = []
+
+      this.blackCases.forEach(v => {
+        if (v.slug === this.$route.params.id) caseList = [...this.blackCases]
+      })
+      this.mainCases.forEach(v => {
+        if (v.slug === this.$route.params.id) caseList = [...this.mainCases]
+      })
+
+      caseList = caseList.filter(v => v.slug !== this.$route.params.id)
+
+      const { title, subtitle, slug } = caseList[
+        Math.floor(Math.random() * caseList.length)
       ]
+
       this.nextCase = {
         title,
         subtitle,

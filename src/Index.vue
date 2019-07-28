@@ -5,11 +5,14 @@
       :isDark="false"
       :scroll="scroll"
       :scrollDelta="scrollDelta"
+      :isNotScrolling="isNotScrolling"
     />
     <Next
-      @visible="isNextVisible = true"
-      @invisible="isNextVisible = false"
+      @toggle-dark="$emit('toggle-dark', $event)"
+      @intersect="onNextIntersect"
+      @notintersect="onNextIntersect"
       to="/about"
+      :pageDark="false"
     >
       <span slot="title">About</span>
       <span slot="text"
@@ -40,10 +43,19 @@ export default {
     scrollDelta: {
       type: Number,
       default: 0
+    },
+    isNotScrolling: {
+      type: Boolean,
+      default: false
     }
   },
   created() {
     this.$emit('toggle-dark', false)
+  },
+  methods: {
+    onNextIntersect(entry) {
+      this.isNextVisible = entry.intersectionRatio >= 0.3
+    }
   }
 }
 </script>

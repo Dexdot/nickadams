@@ -35,7 +35,7 @@
               @mouseover.native="mouseover(project.title, i)"
               @mouseout.native="mouseout"
             >
-              <div class="img__i" :data-kek="img.fields.type">
+              <div class="img__i">
                 <video
                   v-if="img.fields.type === 'video'"
                   autoplay
@@ -63,6 +63,7 @@
 
     <router-link style="display: block" :to="isDark ? '/' : '/black'">
       <Toggler
+        :isNotScrolling="isNotScrolling"
         :isDark="isDark"
         :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
       />
@@ -96,6 +97,10 @@ export default {
       default: false
     },
     isNextVisible: {
+      type: Boolean,
+      default: false
+    },
+    isNotScrolling: {
       type: Boolean,
       default: false
     }
@@ -175,13 +180,6 @@ export default {
       })
     }
   }
-  // watch: {
-  //   isNextVisible(isNextVisible) {
-  //     if (isNextVisible) {
-
-  //     }
-  //   }
-  // }
 }
 </script>
 

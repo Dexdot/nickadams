@@ -15,7 +15,7 @@
       </div>
     </section>
 
-    <!-- <Next class="vision-next" to="/black">
+    <!-- <Next class="vision-next" to="/black" :pageDark="false">
       <span slot="title">Black</span>
       <span slot="text"
         >Jamie then returned home to set up his own product
@@ -32,17 +32,17 @@
 
 <script>
 // import CreditsButton from '@/CreditsButton'
+// import Next from '@/Next'
+
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 const contentful = require('contentful')
 
-import Next from '@/Next'
-
 export default {
   name: 'Vision',
-  components: {
-    Next
-    // CreditsButton
-  },
+  // components: {
+  //   Next,
+  //   CreditsButton
+  // },
   props: {
     scroll: {
       type: Number,
@@ -54,7 +54,7 @@ export default {
     activeSlide: 0
   }),
   created() {
-    this.$emit('toggle-dark', true)
+    this.$emit('toggle-dark', false)
     this.fetchVision()
   },
   methods: {
@@ -191,12 +191,12 @@ export default {
 
 .quotes
   color: transparent
-  text-shadow: 0px 0px 15px #fff
+  text-shadow: 0px 0px 15px #000
   opacity: 0
   transition: 2s
 
 .quotes.blur
-  text-shadow: 0px 0px 0px #fff
+  text-shadow: 0px 0px 0px #000
   opacity: 1
 
 .quotes.is-faster

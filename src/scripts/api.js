@@ -3,47 +3,42 @@ const contentful = require('contentful')
 // Get keys
 const space = process.env.VUE_APP_SPACE_ID
 const accessToken = process.env.VUE_APP_ACCESS_TOKEN
-const BLACK_ID = process.env.VUE_APP_BLACK_ID
-const MAIN_ID = process.env.VUE_APP_MAIN_ID
 
 // Client instance
 const client = contentful.createClient({ accessToken, space })
+window.client = client
 
-export const fetchCases = ctx => {
-  // Get black
-  client.getEntry(BLACK_ID).then(({ fields }) => {
-    const cases = []
+const handleCases = fields => {
+  const cases = []
 
-    fields.list.forEach(v => {
-      const proj = { ...v.fields }
+  fields.list.forEach(v => {
+    const proj = { ...v.fields }
 
-      // Set content type
-      proj.covers.forEach(cover => {
-        cover.fields.type = cover.fields.file.contentType.split('/')[0]
-      })
-
-      cases.push(proj)
+    // Set content type
+    proj.covers.forEach(cover => {
+      cover.fields.type = cover.fields.file.contentType.split('/')[0]
     })
 
-    ctx.$store.dispatch('setCases', { black: true, cases })
+    cases.push(proj)
   })
 
-  // Get main
-  client.getEntry(MAIN_ID).then(({ fields }) => {
-    const cases = []
+  return cases
+}
 
-    fields.list.forEach(v => {
-      const proj = { ...v.fields }
-
-      // Set content type
-      proj.covers.forEach(cover => {
-        cover.fields.type = cover.fields.file.contentType.split('/')[0]
-      })
-
-      cases.push(proj)
+export const fetchCases = ctx => {
+  client.getEntries({ include: 2 }).then(response => {
+    response.items.forEach(v => {
+      // Cases BLACK
+      if (v.fields.name === 'black') {
+        const cases = handleCases(v.fields)
+        ctx.$store.dispatch('setCases', { black: true, cases })
+      }
+      // Cases MAIN
+      if (v.fields.name === 'main') {
+        const cases = handleCases(v.fields)
+        ctx.$store.dispatch('setCases', { black: false, cases })
+      }
     })
-
-    ctx.$store.dispatch('setCases', { black: false, cases })
   })
 }
 

@@ -9,7 +9,6 @@ const enter = el =>
       delay: anime.stagger(50),
       opacity: [0, 1],
       translateY: ['50%', '0%'],
-      // easing: 'easeOutQuint',
       easing: 'cubicBezier(.25,.01,.25,1)',
       begin: () => {
         anime.set(items, {
@@ -35,7 +34,6 @@ const leave = el =>
       targets: [el.querySelector('.next'), el.querySelector('h1')],
       duration: 700,
       opacity: 0,
-      // easing: 'easeOutCirc'
       easing: 'cubicBezier(.25,.01,.25,1)'
     })
 

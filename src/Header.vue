@@ -1,5 +1,5 @@
 <template>
-  <header :class="['header', { dark }]">
+  <header :class="['header', { visible: isHeaderVisible, dark }]">
     <div class="container u-flex u-aic u-jcsb">
       <router-link class="t-ttu" to="/">Nick Adams</router-link>
       <button
@@ -20,12 +20,15 @@ export default {
   name: 'Header',
   props: {
     dark: { type: Boolean, default: false },
-    isHeaderActive: { type: Boolean, default: false }
+    isHeaderActive: { type: Boolean, default: false },
+    isHeaderVisible: { type: Boolean, default: true }
   }
 }
 </script>
 
 <style lang="sass" scoped>
+@import "~@/sass/utils"
+
 .header
   z-index: 2
   position: fixed
@@ -36,6 +39,12 @@ export default {
 
   @media (max-width: 500px)
     top: 32px
+
+.header
+  opacity: 0
+  transition: $trs
+  &.visible
+    opacity: 1
 
 .menu-btn
   display: flex
