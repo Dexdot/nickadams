@@ -1,7 +1,7 @@
 {
-  "name": "adams",
+  "name": "nickadams",
   "version": 2,
-  "alias": "adams",
+  "alias": "nickadams",
   "github": {
     "silent": true
   },
@@ -39,11 +39,5 @@
       "src": ".*",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "VUE_APP_BLACK_ID": "211zl80RZxQhtGrawZYmSE",
-    "VUE_APP_MAIN_ID": "1XHOEik80zQ2MY8aHdrKFd",
-    "VUE_APP_SPACE_ID": "gwqnjet7ukqq",
-    "VUE_APP_ACCESS_TOKEN": "b47a19fd395378fb5e76b2020fb91a0455d2b5ed7d4b9df29101e2e76fd00cc1"
-  }
+  ]
 }
