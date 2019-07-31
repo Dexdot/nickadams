@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import { Lory, Item } from 'vue-lory'
+// import { Lory, Item } from 'vue-lory'
+import { Lory, Item } from '@/Lory'
 
 export default {
   name: 'CaseBox',

@@ -30,9 +30,13 @@ export default {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               this.$emit('intersect', entry)
-              this.$emit('toggle-dark', this.isDark)
             } else {
               this.$emit('notintersect', entry)
+            }
+
+            if (entry.intersectionRatio >= 0.4) {
+              this.$emit('toggle-dark', this.isDark)
+            } else {
               this.$emit('toggle-dark', this.pageDark)
             }
           })
