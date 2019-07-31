@@ -89,7 +89,7 @@ export default {
 @import "~@/sass/utils"
 
 .lory-images li
-  padding-bottom: 62.45%
+  padding-bottom: 56.25%
   position: relative
 
 .lory-images li img

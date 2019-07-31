@@ -152,6 +152,15 @@ export default {
 
       if (roundScroll !== roundTranslate) {
         this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
+
+        // Round scroll (chrome transform bluring)
+        if (
+          roundTranslate >= roundScroll - 10 &&
+          roundTranslate <= roundScroll + 10
+        ) {
+          this.isNotScrolling = true
+          this.translate = Math.round(lerp(this.translate, this.scroll, 0.03))
+        }
       }
 
       // Show header after scroll stops

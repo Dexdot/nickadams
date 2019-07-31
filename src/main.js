@@ -10,9 +10,6 @@ import '@/sass/main.sass'
 
 Vue.config.productionTip = false
 
-import anime from 'animejs'
-window.anime = anime
-
 new Vue({
   router,
   store,

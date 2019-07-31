@@ -6,6 +6,7 @@ now.json
 
 # local env files
 *.env
+*.env.build
 .env.local
 .env.*.local
 
