@@ -1,5 +1,6 @@
 import Main from './Main'
 import Fade from './Fade'
+import Case from './Case'
 
 const transitions = {
   main: {
@@ -9,7 +10,7 @@ const transitions = {
     ...Main
   },
   case: {
-    ...Fade
+    ...Case
   },
   about: {
     ...Fade

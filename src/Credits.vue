@@ -6,10 +6,10 @@
       <nav class="credits__nav">
         <ul>
           <li>
-            <router-link to="/">
+            <button @click="$emit('credits-close')">
               <span class="t-title">Design</span>
               <p class="t-ttu">Nick Adams</p>
-            </router-link>
+            </button>
           </li>
           <li>
             <a href="http://hvxzcb.ru" target="_blank">

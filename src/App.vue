@@ -7,7 +7,7 @@
       @menu-btn-click="toggleMenu"
     />
     <Menu :active="isMenuActive" />
-    <Credits :active="isCreditsActive" />
+    <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
 
     <div class="scroll-container" ref="container">
       <div
@@ -17,10 +17,11 @@
       >
         <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
           <router-view
+            :key="$route.path"
             :scrollDelta="deltaY"
             :scroll="translate"
             :isNotScrolling="isNotScrolling"
-            @credits-click="onCreditsBtnClick"
+            @credits-click="toggleCredits(true)"
             @toggle-dark="onToggle"
           />
         </transition>
@@ -126,10 +127,10 @@ export default {
         this.isDark = this.isMenuActive ? this.isMenuActive : isDark
       }
     },
-    onCreditsBtnClick() {
+    toggleCredits(show) {
       // Credits open
-      this.isCreditsActive = true
-      this.isHeaderActive = true
+      this.isCreditsActive = show
+      this.isHeaderActive = show
     },
     onToggle(v) {
       this.isDark = v
@@ -194,16 +195,8 @@ export default {
     $route(to, from) {
       this.dir = { to, from }
 
-      if (from.name === to.name) {
-        // case => case
-        transitions[from.name]
-          .leave(document.querySelector('main'))
-          .then(() => {
-            this.translate = 0
-            this.scroll = 0
-            transitions[to.name].enter(document.querySelector('main'))
-          })
-      }
+      // if (from.name === to.name) {
+      // }
     }
   }
 }

@@ -264,6 +264,10 @@ export default {
 @import "~@/sass/utils"
 
 // Case
+.page:not(.dark) .case
+  @media (max-width: 700px)
+    background: #fff
+
 .case
   font-size: 18px
   line-height: 1.6
@@ -278,12 +282,10 @@ export default {
   @media (max-width: 900px)
     width: column-spans(10)
 
-  @media (max-width: 700px)
     width: 100%
     padding-left: var(--unit)
     padding-right: var(--unit)
 
-    background: #fff
     padding-top: 33%
     padding-bottom: 35.8%
 

@@ -393,6 +393,7 @@ export default {
     opacity: 1
 
 .about-credits
+  z-index: 2
   opacity: 0
   transition: opacity .9s cubic-bezier(.215,.61,.355,1)
 
