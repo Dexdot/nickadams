@@ -2,14 +2,14 @@
   <main class="main">
     <h1
       v-if="isDesktop"
-      class="main-title t-h1"
+      :class="['main-title', 't-h1', { soon: isSoon }]"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
       ref="title"
     ></h1>
     <h1
       v-show="!isNextVisible"
       v-else
-      class="main-title-mob t-h1"
+      :class="['main-title-mob', 't-h1', { soon: isSoon }]"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
       ref="title-mob"
     >
@@ -18,7 +18,7 @@
 
     <ul class="cases">
       <li
-        class="case"
+        :class="['case', { 'case--soon': project.soon }]"
         ref="cases"
         :data-title="project.title"
         v-for="project in cases"
@@ -29,10 +29,38 @@
             v-for="(img, i) in project.covers"
             :key="img.fields.file.fileName"
           >
+            <span
+              v-if="project.soon"
+              class="img"
+              @mouseover="mouseover(project, i)"
+              @mouseout="mouseout"
+            >
+              <div class="img__i">
+                <video
+                  v-if="img.fields.type === 'video'"
+                  autoplay
+                  playsinline
+                  loop
+                  muted
+                >
+                  <source
+                    :src="img.fields.file.url"
+                    :type="img.fields.contentType"
+                  />
+                </video>
+
+                <img
+                  v-if="img.fields.type === 'image'"
+                  :src="img.fields.file.url"
+                  :alt="project.title"
+                />
+              </div>
+            </span>
             <router-link
+              v-else
               class="img"
               :to="`/case/${project.slug}`"
-              @mouseover.native="mouseover(project.title, i)"
+              @mouseover.native="mouseover(project, i)"
               @mouseout.native="mouseout"
             >
               <div class="img__i">
@@ -107,7 +135,8 @@ export default {
   },
   data: () => ({
     chars: [],
-    titleMob: ''
+    titleMob: '',
+    isSoon: false
   }),
   computed: {
     ...mapGetters(['blackCases', 'mainCases']),
@@ -139,6 +168,8 @@ export default {
                 ? entry.target.getBoundingClientRect().top >= innerHeight / 2
                 : entry.target.getBoundingClientRect().top <= innerHeight / 2.5
             if (entry.intersectionRatio >= 0.8 && scrollCondition) {
+              if (window.innerWidth <= 500)
+                this.isSoon = entry.target.classList.contains('case--soon')
               this.titleMob = entry.target.dataset.title
             }
           })
@@ -149,10 +180,13 @@ export default {
         observer.observe(v)
       })
     },
-    mouseover(title) {
+    mouseover(project) {
       if (!this.$refs.title) return false
 
+      const { title, soon } = project
+
       this.title = title
+      this.isSoon = soon
       this.$refs.title.innerHTML = title
       charming(this.$refs.title)
       this.showTitle()
@@ -162,8 +196,11 @@ export default {
     },
     showTitle(show = true, cb) {
       const { title } = this.$refs
+
       if (!title) return false
       const chars = title.querySelectorAll('span')
+
+      if (!show) this.isSoon = false
 
       anime.remove(chars)
 
@@ -226,6 +263,8 @@ export default {
 </style>
 
 <style lang="sass" scoped>
+@import "~@/sass/utils"
+
 $unit-l: var(--unit-l)
 $unit-reg: var(--unit-reg)
 $unit-sm: var(--unit-sm)
@@ -250,6 +289,52 @@ $mob-mb: 28%
 
 .main
   min-height: 100vh
+
+.page.dark
+  .main-title,
+  .main-title-mob
+    &::before
+      color: #fff
+
+.main-title,
+.main-title-mob
+  &::before
+    content: 'Coming soon'
+    position: absolute
+    top: 100%
+    // left: 50%
+    left: 0
+
+    color: var(--color-text-lt)
+    +tt(b)
+    font-size: 10px
+    letter-spacing: 0.24em
+    text-transform: uppercase
+    text-align: center
+    white-space: nowrap
+
+    transition: 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0s
+    opacity: 0
+    // transform: translate(-50%, 16px)
+    transform: translate(0, 16px)
+
+    @media (max-width: 500px)
+      transition: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)
+  &.soon::before
+    transition: 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s
+    opacity: 1
+    // transform: translate(-50%, 0)
+    transform: translate(0, 0)
+    @media (max-width: 500px)
+      transition: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)
+
+.main-soon
+  pointer-events: none
+  z-index: 1
+  position: fixed
+  top: 25vw
+  left: 50vw
+  margin-top: -0.5em
 
 .main-title
   pointer-events: none

@@ -7,7 +7,7 @@
           <img src="./sign.svg" alt="Подпись" class="sign" />
         </article>
         <div class="about__contact">
-          <p>Contact</p>
+          <p>Контакты</p>
 
           <ul>
             <li>
@@ -16,7 +16,7 @@
               }}</a>
             </li>
             <li>
-              PO Box 106-377
+              {{ this.content.postAddress }}
             </li>
             <li>
               Saint Petersburg
@@ -172,6 +172,9 @@ export default {
           // Email
           this.content.email = fields.email
 
+          // Email
+          this.content.postAddress = fields.postAddress
+
           // Rich text
           this.content.text = fields.text.content
 
@@ -243,7 +246,9 @@ export default {
     padding-bottom: 48vh
 
 .about__info
+  padding-top: 8px
   padding-left: mix(3)
+  // padding-left: mix(2)
   margin-bottom: 12.2%
 
   @media (max-width: 800px)
@@ -252,7 +257,8 @@ export default {
     margin-bottom: 80px
 
 .about__text
-  width: column-spans(3)
+  // width: column-spans(3)
+  width: mix(3)
   line-height: 1.625
 
   @media (max-width: 800px)
