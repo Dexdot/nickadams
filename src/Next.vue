@@ -7,8 +7,8 @@
         </h2>
       </router-link>
       <p><slot name="text"></slot></p>
+      <span class="next-counter" ref="counter">{{ counter }}</span>
     </div>
-    <span class="next-counter" ref="counter">{{ counter }}</span>
   </section>
 </template>
 
@@ -148,21 +148,23 @@ export default {
     max-width: 70%
 
 .next-counter
-  position: absolute
-  top: 50%
-  left: 50%
+  // position: absolute
+  // top: 50%
+  // left: 50%
 
+  // transform: translateX(-50%)
   opacity: 0
-  transform: translateX(-50%)
   display: block
-  margin-top: -0.565em
+  margin-top: 16px
+  // margin-top: -0.565em
 
-  +yo('font-size', (1440px: 120px, 2550px: 180px))
+  // +yo('font-size', (1440px: 120px, 2550px: 180px))
+  font-size: 20px
 
   @media (max-width: 1200px)
     left: var(--unit)
     transform: translateX(0)
 
-  @media (max-width: 700px)
-    font-size: 80px
+  // @media (max-width: 700px)
+  //   font-size: 80px
 </style>

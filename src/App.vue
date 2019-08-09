@@ -27,6 +27,8 @@
         </transition>
       </div>
     </div>
+
+    <div class="cover"></div>
   </div>
 </template>
 
@@ -176,13 +178,18 @@ export default {
       this.scroll = window.pageYOffset
     },
     async enter(el, done) {
-      await transitions[this.dir.to.name].enter(el)
+      const transitionEnter =
+        this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.to.name
+      await transitions[transitionEnter].enter(el)
+
       done()
     },
     async leave(el, done) {
       if (this.isMenuActive) this.toggleMenu()
 
-      await transitions[this.dir.from.name].leave(el)
+      const transitionLeave =
+        this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.from.name
+      await transitions[transitionLeave].leave(el)
 
       this.scroll = 0
       this.translate = 0
@@ -194,9 +201,6 @@ export default {
   watch: {
     $route(to, from) {
       this.dir = { to, from }
-
-      // if (from.name === to.name) {
-      // }
     }
   }
 }
@@ -252,4 +256,15 @@ body.is-macos:not(.is-safari)
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
+
+.cover
+  position: fixed
+  top: 0
+  left: 0
+
+  width: 100vw
+  height: 100vh
+
+  background: #fff
+  transform: translateY(100%)
 </style>

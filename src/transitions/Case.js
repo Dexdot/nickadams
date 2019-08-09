@@ -1,41 +1,48 @@
 import anime from 'animejs'
+window.anime = anime
+
+const easing = 'easeInOutCirc'
 
 const enter = (el, cb) =>
   new Promise(resolve => {
-    anime({
-      targets: el,
-      duration: 800,
-      opacity: [0, 1],
-      easing: 'cubicBezier(.25,.01,.25,1)',
-      begin: () => {
-        el.style.willChange = 'opacity'
-      },
+    const tl = anime.timeline({
       complete: () => {
-        el.style.willChange = ''
         if (cb) cb()
       },
-      update: ({ progress }) => {
-        if (progress >= 60) resolve()
-      }
+      easing
     })
+
+    tl.add(
+      {
+        targets: '.cover',
+        translateY: ['0%', '-100%'],
+        duration: 1000,
+        update: ({ progress }) => {
+          if (progress >= 60) resolve()
+        }
+      },
+      0
+    )
+    tl.add(
+      {
+        targets: el,
+        translateY: ['200px', '0px'],
+        duration: 1000
+      },
+      0
+    )
   })
 
 const leave = (el, cb) =>
   new Promise(resolve => {
     anime({
-      targets: el,
-      duration: 600,
-      opacity: [1, 0],
-      easing: 'cubicBezier(.25,.01,.25,1)',
-      begin: () => {
-        el.style.willChange = 'opacity'
-      },
+      targets: '.cover',
+      translateY: ['100%', '0%'],
+      duration: 800,
+      easing,
       complete: () => {
-        el.style.willChange = ''
+        resolve()
         if (cb) cb()
-      },
-      update: ({ progress }) => {
-        if (progress >= 60) resolve()
       }
     })
   })

@@ -359,11 +359,14 @@ $mob-mb: 28%
   top: 50vh
   left: 50vw
 
+  white-space: nowrap
   text-align: center
   width: 100%
   margin-top: -0.5em
   display: none
   @media (max-width: 500px)
+    max-width: 100%
+    width: auto
     display: block
 
 

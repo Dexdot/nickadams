@@ -10,6 +10,9 @@ const transitions = {
     ...Main
   },
   case: {
+    ...Fade
+  },
+  cases: {
     ...Case
   },
   about: {
