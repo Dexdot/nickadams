@@ -162,11 +162,15 @@ export default {
   },
   async created() {
     this.$emit('toggle-dark', false)
+
+    document.querySelector('body').classList.add('page--white')
+
     await this.setCase()
     this.setNextCase()
     this.observe()
   },
   destroyed() {
+    document.querySelector('body').classList.remove('page--white')
     loop.remove(this.setAsideHeight.bind(this), 'setAsideHeight')
   },
   methods: {

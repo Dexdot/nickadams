@@ -223,6 +223,9 @@ body.is-macos:not(.is-safari)
 </style>
 
 <style lang="sass" scoped>
+.page--white .page:not(.dark)
+  background: #fff
+
 .page:not(.dark)
   transition: background 0.5s ease-in-out
 
