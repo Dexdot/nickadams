@@ -25,7 +25,7 @@ export default {
   data: () => ({
     easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
     isAnimating: false,
-    counter: 5,
+    counter: 3,
     counterEl: null
   }),
   mounted() {
@@ -50,13 +50,13 @@ export default {
 
       const duration = 200
       const show = targets => ({
-        opacity: [0, 1],
+        // opacity: [0, 1],
         translateY: ['-15%', '0%'],
         targets,
         duration
       })
       const hide = targets => ({
-        opacity: [1, 0],
+        // opacity: [1, 0],
         translateY: ['0%', '15%'],
         targets,
         duration,
@@ -74,7 +74,7 @@ export default {
         duration: 200,
         easing: this.easing,
         complete: () => {
-          this.counter = 5
+          this.counter = 3
         }
       })
     },
