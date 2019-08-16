@@ -115,7 +115,7 @@
     >
       <span slot="title">Vision</span>
       <span slot="text"
-        >Jamie then returned home to set up his own product
+        >Looking the world through my eyes
       </span>
     </Next>
   </main>

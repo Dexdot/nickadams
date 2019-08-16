@@ -32,8 +32,8 @@
       "dest": "/img/$1"
     },
     {
-      "src": "^/favicon.ico",
-      "dest": "/favicon.ico"
+      "src": "^/favicon/.*",
+      "dest": "/favicon/$1"
     },
     {
       "src": ".*",

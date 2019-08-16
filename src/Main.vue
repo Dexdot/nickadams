@@ -299,7 +299,7 @@ $mob-mb: 28%
 .main-title,
 .main-title-mob
   &::before
-    content: 'Coming soon'
+    content: 'SOON'
     position: absolute
     top: 100%
     // left: 50%

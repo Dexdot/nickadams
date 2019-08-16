@@ -16,9 +16,7 @@
       :pageDark="true"
     >
       <span slot="title">There will be light</span>
-      <span slot="text"
-        >Jamie then returned home to set up his own product
-      </span>
+      <span slot="text">Make a step and start over again </span>
     </Next>
   </div>
 </template>

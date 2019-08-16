@@ -16,7 +16,7 @@
     >
       <span slot="title">About</span>
       <span slot="text"
-        >Jamie then returned home to set up his own product
+        >Digital designer & art director from St.Petersburg
       </span>
     </Next>
   </div>
