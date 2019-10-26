@@ -25,7 +25,7 @@ export default {
   data: () => ({
     easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
     isAnimating: false,
-    counter: 3,
+    counter: 5,
     counterEl: null
   }),
   mounted() {
@@ -74,7 +74,7 @@ export default {
         duration: 200,
         easing: this.easing,
         complete: () => {
-          this.counter = 3
+          this.counter = 5
         }
       })
     },

@@ -501,6 +501,9 @@ aside
     max-width: 80%
     float: unset
 
+.case aside b
+  +tt(m)
+
 .case aside li
   margin-bottom: 32px
 
