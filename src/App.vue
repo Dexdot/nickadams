@@ -24,7 +24,7 @@
           <router-view
             :key="$route.path"
             :scrollDelta="deltaY"
-            :scroll="getTranslate()"
+            :scroll="translate"
             :isNotScrolling="isNotScrolling"
             @credits-click="toggleCredits(true)"
             @toggle-dark="onToggle"
@@ -106,7 +106,6 @@ export default {
 
     if (isSafari()) {
       window.addEventListener('scroll', this.scrollSafari.bind(this))
-      this.isNotScrolling = true
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
@@ -127,9 +126,6 @@ export default {
     }
   },
   methods: {
-    getTranslate(){
-      return isSafari() ? this.scroll : this.translate
-    },
     getWinHeight() {
       this.winHeight = window.innerHeight
     },
@@ -196,8 +192,7 @@ export default {
         this.isNotScrolling = true
       }
     },
-    scrollSafari({ deltaY }) {
-      this.deltaY = deltaY
+    scrollSafari() {
       this.scroll = window.pageYOffset
     },
     async enter(el, done) {
