@@ -1,19 +1,42 @@
 <template>
   <div>
-    <div class="case-box" :style="{ backgroundColor: color }">
-      <template v-if="content.images.length > 1">
+    <div
+      :class="[
+        'case-box',
+        {
+          'case-box--no-mb': content.resetBottom,
+          'case-box--fullscreen': content.fullscreen
+        }
+      ]"
+      :style="{ backgroundColor: content.color || '#DDDDDD' }"
+    >
+      <template v-if="content.images.length > 1 && !content.disableSlider">
         <lory
           ref="slider"
-          class="lory-images case-box-shadow"
+          class="lory-images"
           :options="loryOptions"
           @lory-init="onLoryInit"
         >
-          <item v-for="img in content.images" :key="img.fields.file.url">
+          <item
+            v-for="(img, i) in content.images"
+            :key="i + img.fields.file.url"
+          >
             <img
+              v-if="isImage(img)"
               draggable="false"
               class="lory-image"
               :src="img.fields.file.url"
               :alt="img.fields.title"
+            />
+            <video
+              playsinline
+              loop
+              autoplay
+              muted
+              v-if="isVideo(img)"
+              draggable="false"
+              class="lory-image"
+              :src="img.fields.file.url"
             />
           </item>
         </lory>
@@ -21,7 +44,7 @@
           <li
             class="u-center"
             v-for="(img, i) in content.images"
-            :key="img.fields.file.url"
+            :key="i + img.fields.file.url"
           >
             <button
               :class="['case-box-dot', { active: index === i }]"
@@ -31,19 +54,51 @@
         </ul>
       </template>
 
-      <img
-        v-else
-        class="case-box-shadow"
-        :src="content.images[0].fields.file.url"
-        :alt="content.images[0].fields.title"
-      />
+      <template v-else-if="content.images.length > 1 && content.disableSlider">
+        <ul class="case-box__list">
+          <li v-for="(img, i) in content.images" :key="i + img.fields.file.url">
+            <img
+              v-if="isImage(img)"
+              :src="img.fields.file.url"
+              :alt="img.fields.title"
+            />
+            <video
+              playsinline
+              loop
+              autoplay
+              muted
+              v-if="isVideo(img)"
+              :src="img.fields.file.url"
+            />
+          </li>
+        </ul>
+      </template>
+
+      <template v-else>
+        <img
+          v-if="isImage(content.images[0])"
+          class="case-box-shadow"
+          :src="content.images[0].fields.file.url"
+          :alt="content.images[0].fields.title"
+        />
+
+        <video
+          playsinline
+          loop
+          autoplay
+          muted
+          v-if="isVideo(content.images[0])"
+          class="case-box-shadow"
+          :src="content.images[0].fields.file.url"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-// import { Lory, Item } from 'vue-lory'
 import { Lory, Item } from '@/Lory'
+import { isImage, isVideo } from '@/scripts/helpers'
 
 export default {
   name: 'CaseBox',
@@ -52,8 +107,7 @@ export default {
     Item
   },
   props: {
-    content: Object,
-    color: String
+    content: Object
   },
   data: () => ({
     index: 0,
@@ -81,7 +135,9 @@ export default {
         this.lory.slideTo(i)
         this.index = i
       }
-    }
+    },
+    isImage,
+    isVideo
   }
 }
 </script>
@@ -89,33 +145,52 @@ export default {
 <style lang="sass" scoped>
 @import "~@/sass/utils"
 
+// Slider items
 .lory-images li
-  padding-bottom: 56.25%
-  position: relative
-
-.lory-images li img
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
-  object-fit: cover
+  vertical-align: middle
 
 .case-box
-  margin-bottom: gutters(1)
   padding: 10.4% 12.7%
-
-  @media (max-width: 900px)
-    margin-bottom: 16px
 
   @media (max-width: 700px)
     width: 100vw
     margin-left: calc(-1 * var(--unit))
     padding: 12.9% var(--unit)
 
+
+// Fullscreen
+.case-box--fullscreen
+  width: 100vw
+  margin-left: calc(-1 * #{mix(1)} - #{var(--unit)})
+  @media (max-width: 900px)
+    margin-left: calc(-1 * var(--unit))
+
+
+// Reset margin bottom
+.case-box:not(.case-box--no-mb)
+  margin-bottom: gutters(1)
+
+  @media (max-width: 900px)
+    margin-bottom: 16px
+
+
+// Shadow
 .case-box-shadow
   box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.15)
 
+
+// List
+.case-box__list
+  display: flex
+  flex-direction: column
+
+  > li:not(:last-child)
+    margin-bottom: columns(1)
+    @media (max-width: 900px)
+      margin-bottom: 24px
+
+
+// Dots
 .case-box-dots
   margin-left: -16px
   transform: translateY(3vw)
@@ -140,7 +215,10 @@ export default {
 .case-box-dot.active
   opacity: 1
 
-img
+
+// Image / video
+img, video
+  outline: none
   display: block
   max-width: 100%
   width: 100%

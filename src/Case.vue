@@ -4,11 +4,29 @@
       <h1 class="case__title t-h3">{{ project.title }}</h1>
       <p>{{ project.subtitle }}</p>
 
-      <img
-        class="case__img"
-        :src="project.cover.fields.file.url"
-        :alt="project.cover.fields.title"
-      />
+      <div class="case__cover">
+        <img
+          class="case__img"
+          :src="project.cover.fields.file.url"
+          :alt="project.cover.fields.title"
+        />
+        <div
+          class="case__preview"
+          v-if="project.stories && project.stories.length > 1"
+        >
+          <ButtonPreview
+            ref="preview"
+            :list="project.stories"
+            @click="
+              $emit('show-stories', {
+                list: project.stories,
+                title: project.title,
+                subtitle: project.date
+              })
+            "
+          />
+        </div>
+      </div>
 
       <section :style="[{ 'min-height': `${asideHeight}px` }]">
         <aside ref="aside">
@@ -40,8 +58,9 @@
             :key="i + item.nodeType"
             :class="{
               case__text: isText(item),
-              case__box: isBox(item),
-              case__row: isRow(item)
+              case__block: isBlock(item),
+              'case__box--no-mb':
+                isBox(item) && item.data.target.fields.resetBottom
             }"
           >
             <p v-if="isText(item)" v-html="render(item)"></p>
@@ -53,16 +72,28 @@
               :alt="item.data.target.fields.title"
             />
 
-            <CaseBox
-              v-if="isBox(item)"
-              :content="item.data.target.fields"
-              :color="boxColor"
+            <video
+              class="case__img"
+              v-if="isVideo(item)"
+              :src="item.data.target.fields.file.url"
+              autoplay
+              playsinline
+              loop
+              muted
             />
 
-            <CaseRow
-              v-if="isRow(item)"
+            <CaseBox v-if="isBox(item)" :content="item.data.target.fields" />
+
+            <CaseRow v-if="isRow(item)" :content="item.data.target.fields" />
+
+            <MobileBox
+              v-if="isMobileBox(item)"
               :content="item.data.target.fields"
-              :color="boxColor"
+            />
+
+            <WideSlider
+              v-if="isWideslider(item)"
+              :content="item.data.target.fields"
             />
           </li>
         </ul>
@@ -127,25 +158,32 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import ButtonPreview from '@/ButtonPreview'
 import Next from '@/Next'
 import CaseRow from '@/CaseRow'
 import CaseBox from '@/CaseBox'
+import MobileBox from '@/MobileBox'
+import WideSlider from '@/WideSlider'
+
 import loop from '@/scripts/loop'
 import { fetchCase } from '@/scripts/api'
+import { isImage, isVideo } from '@/scripts/helpers'
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 
 export default {
   name: 'Case',
   components: {
+    ButtonPreview,
     Next,
     CaseRow,
-    CaseBox
+    CaseBox,
+    MobileBox,
+    WideSlider
   },
   data: () => ({
     project: null,
     content: null,
-    boxColor: '#DDDDDD',
     asideHeight: 100,
     nextCase: null
   }),
@@ -168,6 +206,7 @@ export default {
     await this.setCase()
     this.setNextCase()
     this.observe()
+    this.startPreviews()
   },
   destroyed() {
     document.querySelector('body').classList.remove('page--white')
@@ -199,9 +238,6 @@ export default {
       // Rich content
       this.content = this.project.content.content
 
-      // Box color
-      if (this.project.boxColor) this.boxColor = this.project.boxColor
-
       loop.add(this.setAsideHeight.bind(this), 'setAsideHeight')
     },
     setNextCase() {
@@ -229,6 +265,7 @@ export default {
     observe() {
       const elements = this.$el.querySelectorAll(`.case__title,
       .case__title + p,
+      .case__cover,
       .case__img,
       .case aside li,
       .case__content > li,
@@ -244,15 +281,33 @@ export default {
         observer.observe(el)
       })
     },
+    startPreviews() {
+      if (this.project.stories && this.project.stories.length > 1)
+        this.$nextTick(this.$refs.preview.start)
+    },
     render: item => documentToHtmlString(item),
     isText: item => item.nodeType === 'paragraph',
-    isImage: item => item.nodeType === 'embedded-asset-block',
+    isImage: item =>
+      item.nodeType === 'embedded-asset-block' && isImage(item.data.target),
+    isVideo: item =>
+      item.nodeType === 'embedded-asset-block' && isVideo(item.data.target),
+    isBlock: item =>
+      item.nodeType === 'embedded-entry-block' &&
+      ['row', 'box', 'mobileBox'].includes(
+        item.data.target.sys.contentType.sys.id
+      ),
     isRow: item =>
       item.nodeType === 'embedded-entry-block' &&
       item.data.target.sys.contentType.sys.id === 'row',
     isBox: item =>
       item.nodeType === 'embedded-entry-block' &&
-      item.data.target.sys.contentType.sys.id === 'box'
+      item.data.target.sys.contentType.sys.id === 'box',
+    isMobileBox: item =>
+      item.nodeType === 'embedded-entry-block' &&
+      item.data.target.sys.contentType.sys.id === 'mobileBox',
+    isWideslider: item =>
+      item.nodeType === 'embedded-entry-block' &&
+      item.data.target.sys.contentType.sys.id === 'wideslider'
   },
   watch: {
     async $route() {
@@ -309,10 +364,6 @@ export default {
     margin-left: column-spans(4)
 
     @media (max-width: 900px)
-      width: column-spans(5)
-      margin-left: column-spans(5)
-
-    @media (max-width: 700px)
       margin-left: 0
       width: 100%
 
@@ -324,10 +375,6 @@ export default {
     margin-left: column-spans(4)
 
     @media (max-width: 900px)
-      width: column-spans(5)
-      margin-left: column-spans(5)
-
-    @media (max-width: 700px)
       margin-left: 0
       width: 100%
 
@@ -350,13 +397,35 @@ export default {
 .case__content /deep/ a:hover > b::before
   transform: scaleX(0)
 
-.case__text + .case__box,
-.case__text + .case__row
+.case__box--no-mb + li > .case__img
+  margin-top: 0
+
+.case__block
+  @media (min-width: 901px)
+    width: column-spans(10)
+    margin-left: calc(-1 * #{mix(1)})
+
+.case__text + .case__block
   margin-top: 8.3%
+
+  @media (max-width: 700px)
+    margin-top: 80px
 
 // Paragraph
 .case p
   margin-bottom: 24px
+
+// Cover
+.case__cover
+  position: relative
+
+// Preview
+.case__preview
+  position: absolute
+  right: calc(-1 * #{mix(2)})
+  bottom: 4.5%
+  @media (max-width: 900px)
+    right: 0
 
 // Images
 .case__img
@@ -366,13 +435,12 @@ export default {
   margin: 10.4% 0 10.4% calc(-1 * #{mix(2)} - #{var(--unit)})
 
   @media (max-width: 900px)
-    margin: 48px 0 48px calc(-1 * #{mix(1)} - #{var(--unit)})
+    margin: 48px 0 48px calc(-1 * #{var(--unit)})
 
+.case__img:not(video)
   @media (max-width: 700px)
     object-fit: cover
     height: 100vh
-    height: calc(var(--vh, 1vh) * 100)
-    margin: 48px 0 48px calc(-1 * #{var(--unit)})
 
 // Footer
 .case__footer

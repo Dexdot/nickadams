@@ -8,6 +8,11 @@
     />
     <Menu :active="isMenuActive" />
     <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
+    <Stories
+      :project="storiesPayload"
+      :active="isStoriesActive"
+      @click="isStoriesActive = false"
+    />
 
     <div class="scroll-container" ref="container">
       <div
@@ -23,6 +28,7 @@
             :isNotScrolling="isNotScrolling"
             @credits-click="toggleCredits(true)"
             @toggle-dark="onToggle"
+            @show-stories="showStories"
           />
         </transition>
       </div>
@@ -38,11 +44,16 @@ import inobounce from 'inobounce'
 import Header from '@/Header'
 import Menu from '@/Menu'
 import Credits from '@/Credits'
+import Stories from '@/Stories'
 
 import loop from '@/scripts/loop'
 import { isSafari, isMACOS } from '@/scripts/detect'
 
 import transitions from '@/transitions/'
+
+const onEscape = function({ keyCode }) {
+  if (keyCode === 27) this.isStoriesActive = false
+}
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
@@ -53,9 +64,12 @@ export default {
   components: {
     Header,
     Menu,
-    Credits
+    Credits,
+    Stories
   },
   data: () => ({
+    storiesPayload: {},
+    isStoriesActive: false,
     isNotScrolling: false,
     isHeaderActive: false,
     isMenuActive: false,
@@ -137,6 +151,10 @@ export default {
     onToggle(v) {
       this.isDark = v
     },
+    showStories(payload) {
+      this.storiesPayload = payload
+      this.isStoriesActive = true
+    },
     onScroll({ deltaY }) {
       if (!this.isMenuActive && !this.isCreditsActive)
         this.isNotScrolling = false
@@ -201,6 +219,13 @@ export default {
   watch: {
     $route(to, from) {
       this.dir = { to, from }
+    },
+    isStoriesActive(v) {
+      if (v) {
+        window.addEventListener('keydown', onEscape.bind(this))
+      } else {
+        window.removeEventListener('keydown', onEscape.bind(this))
+      }
     }
   }
 }

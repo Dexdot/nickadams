@@ -1,27 +1,66 @@
 <template>
   <div>
     <ul class="case-row u-flex">
-      <li v-for="img in content.images" :key="img.fields.file.url">
+      <li
+        class="case-row__li"
+        v-for="(img, i) in content.images"
+        :key="i + img.fields.file.url"
+      >
         <div
-          class="case-box"
           v-if="content.box"
-          :style="{ backgroundColor: color }"
+          class="case-box"
+          :style="{ backgroundColor: content.color || '#DDDDDD' }"
         >
-          <img :src="img.fields.file.url" :alt="img.fields.title" />
+          <img
+            v-if="isImage(img)"
+            class="case-row__img case-box__img"
+            :src="img.fields.file.url"
+            :alt="img.fields.title"
+          />
+          <video
+            v-if="isVideo(img)"
+            class="case-row__img case-box__img"
+            :src="img.fields.file.url"
+            playsinline
+            autoplay
+            muted
+            loop
+          />
         </div>
 
-        <img v-else :src="img.fields.file.url" :alt="img.fields.title" />
+        <template v-else>
+          <img
+            v-if="isImage(img)"
+            class="case-row__img"
+            :src="img.fields.file.url"
+            :alt="img.fields.title"
+          />
+          <video
+            v-if="isVideo(img)"
+            class="case-row__img"
+            :src="img.fields.file.url"
+            playsinline
+            autoplay
+            muted
+            loop
+          />
+        </template>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import { isImage, isVideo } from '@/scripts/helpers'
+
 export default {
   name: 'CaseRow',
   props: {
-    content: Object,
-    color: String
+    content: Object
+  },
+  methods: {
+    isImage,
+    isVideo
   }
 }
 </script>
@@ -41,16 +80,19 @@ export default {
     flex-direction: column
     margin-left: calc(-1 * var(--unit))
 
-.case-row li
+// LI
+.case-row__li
+  width: 50%
   margin-left: gutters(1)
 
   @media (max-width: 900px)
     margin-left: 16px
-.case-row li
+
   @media (max-width: 700px)
+    width: 100%
     margin-left: 0
 
-.case-row li:not(:last-child)
+.case-row__li:not(:last-child)
   @media (max-width: 700px)
     margin-bottom: 16px
 
@@ -60,11 +102,13 @@ export default {
   @media (max-width: 700px)
     padding: 12.9% var(--unit)
 
-.case-box img
+.case-box__img
   box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.15)
 
-img
+.case-row__img
+  outline: none
   display: block
   max-width: 100%
+  width: 100%
   height: auto
 </style>
