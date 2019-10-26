@@ -31,18 +31,11 @@
 </template>
 
 <script>
-// import CreditsButton from '@/CreditsButton'
-// import Next from '@/Next'
-
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
-const contentful = require('contentful')
+import { fetchVision } from '@/scripts/api'
 
 export default {
   name: 'Vision',
-  // components: {
-  //   Next,
-  //   CreditsButton
-  // },
   props: {
     scroll: {
       type: Number,
@@ -59,37 +52,23 @@ export default {
   },
   methods: {
     render: item => documentToHtmlString(item),
-    fetchVision() {
-      // Get keys
-      const space = process.env.VUE_APP_SPACE_ID
-      const accessToken = process.env.VUE_APP_ACCESS_TOKEN
+    async fetchVision() {
+      const res = await fetchVision()
+      this.slides = [...this.getSlides(res)]
 
-      // Client instance
-      const client = contentful.createClient({ accessToken, space })
+      this.$nextTick(() => {
+        const { quotes, counter } = this.$refs
+        if (!quotes) return false
 
-      // Get 'vision'
-      client
-        .getEntries({
-          content_type: 'vision'
-        })
-        .then(({ items }) => {
-          const { fields } = items[0]
-          this.slides = [...this.getSlides(fields)]
+        setTimeout(() => {
+          quotes.classList.add('blur')
+          counter.classList.add('visible')
+        }, 200)
 
-          this.$nextTick(() => {
-            const { quotes, counter } = this.$refs
-            if (!quotes) return false
-
-            setTimeout(() => {
-              quotes.classList.add('blur')
-              counter.classList.add('visible')
-            }, 200)
-
-            setTimeout(() => {
-              quotes.classList.add('is-faster')
-            }, 2200)
-          })
-        })
+        setTimeout(() => {
+          quotes.classList.add('is-faster')
+        }, 2200)
+      })
     },
     getSlides(fields) {
       let counter = 0

@@ -6,7 +6,6 @@ const accessToken = process.env.VUE_APP_ACCESS_TOKEN
 
 // Client instance
 const client = contentful.createClient({ accessToken, space })
-window.client = client
 
 const handleCases = fields => {
   const cases = []
@@ -52,5 +51,28 @@ export const fetchCase = slug =>
       })
       .then(({ items }) => {
         resolve(items[0] ? items[0].fields : null)
+      })
+  })
+
+export const fetchVision = () =>
+  new Promise(resolve => {
+    client
+      .getEntries({
+        content_type: 'vision'
+      })
+      .then(({ items }) => {
+        resolve(items[0] ? items[0].fields : null)
+      })
+  })
+
+export const fetchInspire = () =>
+  new Promise(resolve => {
+    // Get inspire
+    client
+      .getEntries({
+        content_type: 'inspireBlock'
+      })
+      .then(({ items }) => {
+        resolve(items)
       })
   })

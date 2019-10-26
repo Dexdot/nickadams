@@ -20,6 +20,9 @@ const transitions = {
   },
   vision: {
     ...Fade
+  },
+  inspire: {
+    ...Fade
   }
 }
 

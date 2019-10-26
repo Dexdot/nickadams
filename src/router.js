@@ -31,6 +31,11 @@ export default new Router({
       path: '/vision',
       name: 'vision',
       component: () => import('@/Vision.vue')
+    },
+    {
+      path: '/inspire',
+      name: 'inspire',
+      component: () => import('@/Inspire.vue')
     }
   ]
 })
