@@ -3,15 +3,17 @@
     ref="list"
     :class="['dropdown__list', { 'dropdown__list--expanded': expanded }]"
     :style="{
+      width,
       transform: `translateY(-${expanded ? 0 : index * height}px)`,
       maxHeight: expanded ? `${height * list.length}px` : `${height}px`
     }"
     @mouseleave="onMouseout"
   >
     <li
+      ref="li"
       :class="['dropdown__li', { active: i === index }]"
+      :key="item.sys.id + changingIndex"
       v-for="(item, i) in list"
-      :key="item.sys.id"
       @click="onClick(i)"
       @mouseover="onMouseover(i)"
     >
@@ -31,9 +33,21 @@ export default {
   data: () => ({
     expanded: false,
     index: 0,
+    initWidth: 0,
     height: 24,
-    isTouch: false
+    isTouch: false,
+    changingIndex: 0
   }),
+  computed: {
+    width() {
+      const i = this.expanded ? 0 : this.index
+      const sum = this.$refs.li && this.$refs.li.length === 1 ? 8 : 0
+
+      return this.$refs.li
+        ? `${this.$refs.li[i].firstElementChild.offsetWidth + sum}px`
+        : this.initWidth
+    }
+  },
   mounted() {
     this.isTouch = isTouchDevice()
     this.$nextTick(this.setup)
@@ -43,6 +57,8 @@ export default {
   },
   methods: {
     setup() {
+      this.initWidth = this.$refs.li[0].firstElementChild.offsetWidth
+
       this.calcHeight()
       window.addEventListener('resize', this.calcHeight.bind(this))
     },
@@ -66,6 +82,12 @@ export default {
     onMouseout() {
       this.expanded = false
     }
+  },
+  watch: {
+    list() {
+      // Меняем это значение => изменяется :key у $refs.li => компонент ререндерится
+      this.changingIndex++
+    }
   }
 }
 </script>
@@ -73,6 +95,8 @@ export default {
 <style lang="sass" scoped>
 .dropdown__li
   cursor: pointer
+  white-space: nowrap
+
   transition: .5s cubic-bezier(.645,.045,.355,1)
   opacity: 0
   pointer-events: none
@@ -104,7 +128,8 @@ export default {
   transform: scaleX(1)
 
 .dropdown__list
-  transition: transform .5s cubic-bezier(.645,.045,.355,1), max-height .5s cubic-bezier(.645,.045,.355,1)
+  // transition: transform .5s cubic-bezier(.645,.045,.355,1), max-height .5s cubic-bezier(.645,.045,.355,1)
+  transition: .5s cubic-bezier(.645,.045,.355,1)
 
 .dropdown__list--expanded .dropdown__li
   opacity: 1

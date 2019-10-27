@@ -99,6 +99,7 @@ export default {
 
     // On Scroll
     this.vs = new VirtualScroll({
+      firefoxMultiplier: 25,
       mouseMultiplier: 0.8,
       touchMultiplier: 4,
       passive: true

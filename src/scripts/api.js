@@ -65,12 +65,13 @@ export const fetchVision = () =>
       })
   })
 
-export const fetchInspire = () =>
+export const fetchInspire = options =>
   new Promise(resolve => {
     // Get inspire
     client
       .getEntries({
-        content_type: 'inspireBlock'
+        content_type: 'inspireBlock',
+        ...options
       })
       .then(({ items }) => {
         resolve(items)

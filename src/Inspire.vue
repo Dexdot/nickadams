@@ -56,6 +56,10 @@
         </div>
       </li>
     </ul>
+
+    <button class="inspire-more" @click="load" v-show="!hideMoreButton">
+      Load more
+    </button>
   </main>
 </template>
 
@@ -85,9 +89,12 @@ export default {
     Dropdown
   },
   data: () => ({
+    hideMoreButton: false,
     list: [],
     filterType: 'all',
-    filterCategory: 'all'
+    filterCategory: 'all',
+    limit: 12,
+    skip: 0
   }),
   computed: {
     filteredList() {
@@ -124,13 +131,23 @@ export default {
       return [all, ...getUnique(this.list, 'types')]
     }
   },
-  async created() {
+  created() {
     this.$emit('toggle-dark', false)
-    this.list = await fetchInspire()
+    this.load()
   },
   methods: {
     isImage,
     isVideo,
+    async load() {
+      const { limit, skip } = this
+
+      const newList = await fetchInspire({ limit, skip })
+      this.list = [...this.list, ...newList]
+      // .sort((a, b) => b.fields.year - a.fields.year)
+      this.skip += limit
+
+      this.hideMoreButton = newList.length !== this.limit
+    },
     onDropdownClick({ fields }, key) {
       if (this[key] === fields.slug) return false
 
@@ -222,5 +239,8 @@ export default {
   align-items: flex-start
   justify-content: space-between
 
-.inspire-block__name
+.inspire-more
+  display: block
+  margin: 40px auto
+  text-transform: uppercase
 </style>
