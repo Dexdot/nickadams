@@ -20,7 +20,7 @@
       <li class="inspire__li" v-for="item in filteredList" :key="item.sys.id">
         <div class="inspire-block">
           <a :href="item.fields.url" target="_blank">
-            <img
+            <ImageDecode
               v-if="isImage(item.fields.image)"
               class="inspire-block__img"
               :src="item.fields.image.fields.file.url"
@@ -66,6 +66,7 @@
 <script>
 import anime from 'animejs'
 import Dropdown from '@/Dropdown'
+import ImageDecode from '@/ImageDecode'
 
 import { fetchInspire } from '@/scripts/api'
 import { isImage, isVideo } from '@/scripts/helpers'
@@ -86,6 +87,7 @@ const getUnique = (list, key) => {
 export default {
   name: 'Inspire',
   components: {
+    ImageDecode,
     Dropdown
   },
   data: () => ({

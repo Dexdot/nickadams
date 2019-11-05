@@ -21,7 +21,7 @@
             v-for="(img, i) in content.images"
             :key="i + img.fields.file.url"
           >
-            <img
+            <ImageDecode
               v-if="isImage(img)"
               draggable="false"
               class="lory-image"
@@ -57,7 +57,7 @@
       <template v-else-if="content.images.length > 1 && content.disableSlider">
         <ul class="case-box__list">
           <li v-for="(img, i) in content.images" :key="i + img.fields.file.url">
-            <img
+            <ImageDecode
               v-if="isImage(img)"
               :src="img.fields.file.url"
               :alt="img.fields.title"
@@ -77,7 +77,7 @@
       </template>
 
       <template v-else>
-        <img
+        <ImageDecode
           v-if="isImage(content.images[0])"
           class="case-box-shadow"
           :src="content.images[0].fields.file.url"
@@ -101,12 +101,14 @@
 </template>
 
 <script>
+import ImageDecode from '@/ImageDecode'
 import { Lory, Item } from '@/Lory'
 import { isImage, isVideo } from '@/scripts/helpers'
 
 export default {
   name: 'CaseBox',
   components: {
+    ImageDecode,
     Lory,
     Item
   },

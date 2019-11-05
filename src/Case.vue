@@ -67,9 +67,10 @@
           >
             <p v-if="isText(item)" v-html="render(item)"></p>
 
-            <img
-              class="case__img"
+            <ImageDecode
+              @complete="onImageDecodeComplete"
               v-if="isImage(item)"
+              class="case__img"
               :src="item.data.target.fields.file.url"
               :alt="item.data.target.fields.title"
               draggable="false"
@@ -168,6 +169,7 @@ import CaseRow from '@/CaseRow'
 import CaseBox from '@/CaseBox'
 import MobileBox from '@/MobileBox'
 import WideSlider from '@/WideSlider'
+import ImageDecode from '@/ImageDecode'
 
 import loop from '@/scripts/loop'
 import { fetchCase } from '@/scripts/api'
@@ -183,13 +185,15 @@ export default {
     CaseRow,
     CaseBox,
     MobileBox,
-    WideSlider
+    WideSlider,
+    ImageDecode
   },
   data: () => ({
     project: null,
     content: null,
     asideHeight: 100,
-    nextCase: null
+    nextCase: null,
+    observer: null
   }),
   computed: {
     ...mapGetters(['blackCases', 'mainCases'])
@@ -277,15 +281,18 @@ export default {
       .case__content > li,
       .case__footer > li`)
 
-      const observer = new IntersectionObserver(entries => {
+      this.observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) entry.target.classList.add('visible')
         })
       })
 
       elements.forEach(el => {
-        observer.observe(el)
+        this.observer.observe(el)
       })
+    },
+    onImageDecodeComplete(img) {
+      this.observer.observe(img)
     },
     startPreviews() {
       if (this.project.stories && this.project.stories.length > 1)
@@ -451,11 +458,6 @@ export default {
 
   @media (max-width: 900px)
     margin: 48px 0 48px calc(-1 * #{var(--unit)})
-
-// .case__img:not(video)
-//   @media (max-width: 700px)
-//     object-fit: cover
-//     height: 100vh
 
 // Footer
 .case__footer
