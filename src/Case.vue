@@ -9,6 +9,7 @@
           class="case__img"
           :src="project.cover.fields.file.url"
           :alt="project.cover.fields.title"
+          draggable="false"
         />
         <div
           class="case__preview"
@@ -21,7 +22,8 @@
               $emit('show-stories', {
                 list: project.stories,
                 title: project.title,
-                subtitle: project.date
+                subtitle: project.date,
+                url: project.etalon
               })
             "
           />
@@ -46,7 +48,7 @@
             <template v-if="project.awards">
               <li>
                 <b>Awards</b>
-                <p>{{ awards }}</p>
+                <p>{{ project.awards }}</p>
               </li>
             </template>
           </ul>
@@ -70,12 +72,14 @@
               v-if="isImage(item)"
               :src="item.data.target.fields.file.url"
               :alt="item.data.target.fields.title"
+              draggable="false"
             />
 
             <video
               class="case__img"
               v-if="isVideo(item)"
               :src="item.data.target.fields.file.url"
+              draggable="false"
               autoplay
               playsinline
               loop
@@ -133,8 +137,8 @@
           </div>
 
           <div class="case__footer-col">
-            <a :href="`https://${project.etalon}`" target="_blank">
-              {{ project.etalon }}
+            <a :href="project.etalon" target="_blank">
+              {{ project.etalon.replace(/(^\w+:|^)\/\//, '') }}
             </a>
           </div>
         </li>
@@ -143,7 +147,7 @@
 
     <Next
       v-if="project && nextCase"
-      :to="`/case/${nextCase.slug}`"
+      :to="nextCase.to"
       @toggle-dark="$emit('toggle-dark', $event)"
       :pageDark="false"
     >
@@ -188,15 +192,7 @@ export default {
     nextCase: null
   }),
   computed: {
-    ...mapGetters(['blackCases', 'mainCases']),
-    awards() {
-      const result = this.project.awards.reduce((sum, cur, i, arr) => {
-        if (i === 1) return `${sum} / ${cur} / `
-        if (i === arr.length - 1) return `${sum + cur}`
-        return `${sum + cur} / `
-      })
-      return result
-    }
+    ...mapGetters(['blackCases', 'mainCases'])
   },
   async created() {
     this.$emit('toggle-dark', false)
@@ -250,16 +246,26 @@ export default {
         if (v.slug === this.$route.params.id) caseList = [...this.mainCases]
       })
 
-      caseList = caseList.filter(v => v.slug !== this.$route.params.id)
+      caseList = caseList.filter(
+        v => v.slug !== this.$route.params.id && !v.soon
+      )
 
-      const { title, subtitle, slug } = caseList[
-        Math.floor(Math.random() * caseList.length)
-      ]
+      if (caseList.length > 0) {
+        const { title, subtitle, slug } = caseList[
+          Math.floor(Math.random() * caseList.length)
+        ]
 
-      this.nextCase = {
-        title,
-        subtitle,
-        slug
+        this.nextCase = {
+          title,
+          subtitle,
+          to: `/case/${slug}`
+        }
+      } else {
+        this.nextCase = {
+          title: 'About',
+          subtitle: 'Digital designer & art director from St.Petersburg',
+          to: '/about'
+        }
       }
     },
     observe() {
@@ -367,6 +373,13 @@ export default {
       margin-left: 0
       width: 100%
 
+.case__img,
+.case__content /deep/ img,
+.case__content /deep/ video
+  @media (max-width: 500px)
+    user-select: none
+    pointer-events: none
+
 .case__content > li >
   h2, h3,
   ul, ol,
@@ -405,6 +418,7 @@ export default {
     width: column-spans(10)
     margin-left: calc(-1 * #{mix(1)})
 
+.case__text + li .wideslider,
 .case__text + .case__block
   margin-top: 8.3%
 
@@ -421,6 +435,7 @@ export default {
 
 // Preview
 .case__preview
+  pointer-events: auto
   position: absolute
   right: calc(-1 * #{mix(2)})
   bottom: 4.5%
@@ -437,10 +452,10 @@ export default {
   @media (max-width: 900px)
     margin: 48px 0 48px calc(-1 * #{var(--unit)})
 
-.case__img:not(video)
-  @media (max-width: 700px)
-    object-fit: cover
-    height: 100vh
+// .case__img:not(video)
+//   @media (max-width: 700px)
+//     object-fit: cover
+//     height: 100vh
 
 // Footer
 .case__footer

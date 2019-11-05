@@ -13,6 +13,7 @@
           v-if="isImage(img)"
           :src="img.fields.file.url"
           :alt="img.fields.title"
+          draggable="false"
         />
         <video
           v-if="isVideo(img)"
@@ -21,6 +22,7 @@
           loop
           autoplay
           muted
+          draggable="false"
         />
       </swiper-slide>
     </swiper>

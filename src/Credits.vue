@@ -18,7 +18,7 @@
             </a>
           </li>
           <li>
-            <a href="http://instagram.com/darisha_" target="_blank">
+            <a href="https://darina.now.sh" target="_blank">
               <span class="t-title">Management</span>
               <p class="t-ttu">Darina Yurina</p>
             </a>

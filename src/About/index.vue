@@ -114,9 +114,7 @@
       :pageDark="true"
     >
       <span slot="title">Vision</span>
-      <span slot="text"
-        >Looking the world through my eyes
-      </span>
+      <span slot="text">Looking the world through my eyes </span>
     </Next>
   </main>
 </template>
@@ -194,7 +192,9 @@ export default {
 
           // Observe
           this.$nextTick(() => {
-            this.observe()
+            setTimeout(() => {
+              this.observe()
+            }, 400)
           })
         })
     },
@@ -413,16 +413,13 @@ export default {
     margin-top: 32px
     transform: translateY(0) !important
 
-// .about__contact li
-//   transform: translateY(16px)
+@for $i from 1 through 6
+  .about__text > *
+    &:nth-child(#{$i})
+      transition: 1.2s cubic-bezier(.215,.61,.355,1) (#{$i*0.1s})
 
-//   &.visible
-//     transform: translateY(0)
-
-// @for $i from 1 through 10
-//   .about__text > p,
-//   .about__contact li,
-//   .about__list li
-//     &:nth-child(#{$i})
-//       transition: 0.8s cubic-bezier(.25,.1,.25,1) (#{$i*0.05s})
+@for $i from 1 through 3
+  .about__list li
+    &:nth-child(#{$i})
+      transition: 1.2s cubic-bezier(.215,.61,.355,1) (#{$i*0.1s})
 </style>

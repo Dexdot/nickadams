@@ -61,6 +61,7 @@
               v-if="isImage(img)"
               :src="img.fields.file.url"
               :alt="img.fields.title"
+              draggable="false"
             />
             <video
               playsinline
@@ -69,6 +70,7 @@
               muted
               v-if="isVideo(img)"
               :src="img.fields.file.url"
+              draggable="false"
             />
           </li>
         </ul>
@@ -80,6 +82,7 @@
           class="case-box-shadow"
           :src="content.images[0].fields.file.url"
           :alt="content.images[0].fields.title"
+          draggable="false"
         />
 
         <video
@@ -90,6 +93,7 @@
           v-if="isVideo(content.images[0])"
           class="case-box-shadow"
           :src="content.images[0].fields.file.url"
+          draggable="false"
         />
       </template>
     </div>

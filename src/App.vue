@@ -24,7 +24,7 @@
           <router-view
             :key="$route.path"
             :scrollDelta="deltaY"
-            :scroll="translate"
+            :scroll="getTranslate()"
             :isNotScrolling="isNotScrolling"
             @credits-click="toggleCredits(true)"
             @toggle-dark="onToggle"
@@ -57,7 +57,9 @@ const onEscape = function({ keyCode }) {
 
 const roundDec = n => Math.round(n * 100) / 100
 const lerp = (a, b, n) => (1 - n) * a + n * b
+
 let isDark
+let timer
 
 export default {
   name: 'App',
@@ -67,10 +69,15 @@ export default {
     Credits,
     Stories
   },
+  computed: {
+    disableScroll() {
+      return this.isMenuActive || this.isCreditsActive || this.isStoriesActive
+    }
+  },
   data: () => ({
     storiesPayload: {},
     isStoriesActive: false,
-    isNotScrolling: false,
+    isNotScrolling: true,
     isHeaderActive: false,
     isMenuActive: false,
     isCreditsActive: false,
@@ -107,6 +114,7 @@ export default {
 
     if (isSafari()) {
       window.addEventListener('scroll', this.scrollSafari.bind(this))
+      this.checkScrollStop()
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
@@ -119,14 +127,16 @@ export default {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
 
     if (isSafari()) {
-      // document.querySelector('body').remove('is-safari')
       window.removeEventListener('scroll', this.scrollSafari.bind(this))
     } else {
       this.vs.off(this.onScroll)
-      loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
+      loop.remove('checkSmooth')
     }
   },
   methods: {
+    getTranslate() {
+      return isSafari() ? this.scroll : this.translate
+    },
     getWinHeight() {
       this.winHeight = window.innerHeight
     },
@@ -157,8 +167,12 @@ export default {
       this.isStoriesActive = true
     },
     onScroll({ deltaY }) {
-      if (!this.isMenuActive && !this.isCreditsActive)
+      if (this.disableScroll) return false
+
+      if (!this.isMenuActive && !this.isCreditsActive) {
+        clearTimeout(timer)
         this.isNotScrolling = false
+      }
 
       this.deltaY = deltaY
       const scroll = this.scroll + -1 * deltaY
@@ -176,25 +190,39 @@ export default {
         this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
 
         // Round scroll (chrome transform bluring)
+        // Show header after scroll stops
+
+        if (this.isNotScrolling) clearTimeout(timer)
+
         if (
-          roundTranslate >= roundScroll - 10 &&
-          roundTranslate <= roundScroll + 10
+          roundTranslate >= roundScroll - 1 &&
+          roundTranslate <= roundScroll + 1
         ) {
-          this.isNotScrolling = true
           this.translate = Math.round(lerp(this.translate, this.scroll, 0.03))
+
+          timer = setTimeout(() => {
+            this.isNotScrolling = true
+          }, 1200)
+        } else {
+          clearTimeout(timer)
+          this.isNotScrolling = false
         }
       }
-
-      // Show header after scroll stops
-      if (
-        roundTranslate >= roundScroll - 100 &&
-        roundTranslate <= roundScroll + 100
-      ) {
-        this.isNotScrolling = true
-      }
     },
-    scrollSafari() {
+    scrollSafari({ deltaY }) {
+      if (this.disableScroll) return false
+
+      this.deltaY = deltaY
       this.scroll = window.pageYOffset
+    },
+    checkScrollStop() {
+      window.addEventListener('scroll', () => {
+        this.isNotScrolling = false
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          this.isNotScrolling = true
+        }, 250)
+      })
     },
     async enter(el, done) {
       const transitionEnter =
@@ -204,17 +232,21 @@ export default {
       done()
     },
     async leave(el, done) {
-      if (this.isMenuActive) this.toggleMenu()
+      const delay = this.isMenuActive || this.isCreditsActive ? 600 : 0
+      if (this.isMenuActive || this.isCreditsActive) this.toggleMenu()
 
-      const transitionLeave =
-        this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.from.name
-      await transitions[transitionLeave].leave(el)
+      // timeout - menu transition-duration
+      setTimeout(async () => {
+        const transitionLeave =
+          this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.from.name
+        await transitions[transitionLeave].leave(el)
 
-      this.scroll = 0
-      this.translate = 0
-      window.scrollTo(0, 0)
+        this.scroll = 0
+        this.translate = 0
+        window.scrollTo(0, 0)
 
-      done()
+        done()
+      }, delay)
     }
   },
   watch: {

@@ -199,6 +199,9 @@ export default {
 
       if (!title) return false
       const chars = title.querySelectorAll('span')
+      chars.forEach(char => {
+        if (char.textContent === ' ') char.classList.add('is-space')
+      })
 
       if (!show) this.isSoon = false
 
@@ -319,7 +322,9 @@ $mob-mb: 28%
     transform: translate(0, 16px)
 
     @media (max-width: 500px)
+      font-size: 9px
       transition: 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)
+
   &.soon::before
     transition: 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s
     opacity: 1
@@ -348,9 +353,10 @@ $mob-mb: 28%
     display: none
 
   /deep/ span
-    min-width: 0.3em
     display: inline-block
     will-change: transform, opacity
+    &.is-space
+      min-width: 0.3em
 
 .main-title-mob
   pointer-events: none
@@ -403,7 +409,8 @@ $mob-mb: 28%
 
 
 .cases
-  padding-top: 7.6%
+  // padding-top: 7.6%
+  padding-top: 16vh
   padding-bottom: 10%
 
   @media (max-width: 900px)

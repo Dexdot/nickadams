@@ -11,6 +11,7 @@
           class="mobile-box__img"
           :src="img.fields.file.url"
           :alt="img.fields.title"
+          draggable="false"
         />
         <video
           v-if="isVideo(img)"
@@ -20,6 +21,7 @@
           autoplay
           muted
           loop
+          draggable="false"
         />
       </li>
     </ul>

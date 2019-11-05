@@ -3,33 +3,57 @@
     <section
       :class="['stories-section', { 'is-touch': isTouch }]"
       v-show="active"
-      @click="onClick"
     >
       <div class="stories-head" v-if="$refs.swiper">
-        <img
-          :src="previewImage.src"
-          :alt="previewImage.alt"
-          class="stories-circle"
-        />
-
-        <div class="stories-caption">
-          <p>{{ project.title }}</p>
-          <p>{{ project.subtitle }}</p>
-        </div>
+        <p class="t-ttu">{{ project.title }}</p>
 
         <button class="stories-close" @click="$emit('click')">
-          <img :src="require('./assets/close.svg')" alt="Close" />
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M24 8L8 24" />
+            <path d="M8 8L24 24" />
+          </svg>
         </button>
       </div>
 
       <swiper v-if="project" :options="swiperOptions" ref="swiper">
-        <swiper-slide v-for="story in project.list" :key="story.sys.id">
-          <div class="story-img">
+        <swiper-slide v-for="(story, i) in project.list" :key="story.sys.id">
+          <div class="story-img" @click="onSlideClick($event, i)">
             <img
               :src="story.fields.file.url"
               :alt="story.fields.title"
               class="story-img__i"
             />
+          </div>
+        </swiper-slide>
+
+        <swiper-slide class="swiper-slide--last" v-if="project.url">
+          <div
+            class="story-img"
+            @click="onSlideClick($event, project.list.length)"
+          >
+            <a
+              ref="link"
+              :class="{
+                'long-text':
+                  project.url.replace(/(^\w+:|^)\/\//, '').length > 35
+              }"
+              :href="project.url"
+              target="_blank"
+              @click.prevent
+            >
+              <span class="t-ttu">{{
+                project.url.replace(/(^\w+:|^)\/\//, '')
+              }}</span>
+            </a>
           </div>
         </swiper-slide>
       </swiper>
@@ -63,23 +87,11 @@ export default {
       slidesPerView: 'auto',
       autoHeight: true,
       centeredSlides: true,
-      slideToClickedSlide: true,
+      // slideToClickedSlide: true,
       grabCursor: true
     },
     isTouch: false
   }),
-  computed: {
-    previewImage() {
-      return this.project.list
-        ? {
-            src: this.project.list[this.$refs.swiper.swiper.activeIndex].fields
-              .file.url,
-            alt: this.project.list[this.$refs.swiper.swiper.activeIndex].fields
-              .title
-          }
-        : { src: '', alt: '' }
-    }
-  },
   watch: {
     active(opening) {
       opening && this.$refs.swiper && this.$refs.swiper.swiper.slideTo(0)
@@ -92,14 +104,14 @@ export default {
     this.$refs.swiper.swiper.destroy(true, false)
   },
   methods: {
-    onClick({ target }) {
-      const classes = ['stories-link', 'swiper']
+    onSlideClick(e, i) {
+      const { swiper } = this.$refs.swiper
+      const isLast = i === this.project.list.length && i === swiper.activeIndex
 
-      if (
-        !classes.some(cls => target.className.indexOf(cls) !== -1) &&
-        !this.isTouch
-      ) {
-        this.$emit('click')
+      if (!this.project.url || !isLast) {
+        swiper.slideTo(i)
+      } else if (isLast) {
+        window.open(this.$refs.link.href)
       }
     }
   }
@@ -114,34 +126,20 @@ export default {
 .stories-leave-to
   opacity: 0
   pointer-events: none
-
-
 .stories-enter-to,
 .stories-leave
   opacity: 1
   pointer-events: auto
-
 .stories-enter-active,
 .stories-leave-active
   transition: 0.25s $ease-out
 
-
 // Styles
-.stories-circle
-  width: 48px
-  height: 48px
-  margin-right: 24px
-
-  border-radius: 50%
-  object-fit: cover
-
-  @media (max-width: 500px)
-    display: none
-
 .stories-head
   width: 100%
   display: flex
   align-items: center
+  justify-content: space-between
 
   position: absolute
   top: 3.7%
@@ -149,34 +147,6 @@ export default {
 
   @media (max-width: 900px)
     top: 32px
-
-.stories-caption
-  display: flex
-  align-items: center
-
-  p:nth-child(2)
-    margin-left: 8px
-    padding-left: 12px
-
-    color: rgba(var(--color-text-lt), 0.3)
-
-    position: relative
-
-    &::before
-      content: ''
-      position: absolute
-      top: 50%
-      left: 0
-      transform: translate(0, -50%)
-
-      width: 4px
-      height: 4px
-
-      background: rgba(var(--color-text-lt), 0.2)
-      border-radius: 50%
-
-  @media (max-width: 500px)
-    font-size: 14px
 
 .stories-section
   z-index: 3
@@ -191,55 +161,53 @@ export default {
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
+  display: flex
+  align-items: center
+  justify-content: center
 
   background: #fff
-  &:not(.is-touch)
-    cursor: url('~@/assets/close.svg') 24 24, pointer
-
 
   @media (min-width: 1001px) and (max-width: 1440px) and (max-height: 700px)
-    display: flex
     align-items: flex-end
     padding-bottom: 24px
 
   @media (max-width: 1000px)
-    display: flex
-    align-items: center
-    justify-content: center
     padding-top: 0
 
   @media (max-width: 500px)
-    align-items: flex-start
-    padding-bottom: 24px
-    padding-top: 96px
-
-
+    padding-top: 40px
 
 .stories-close
-  margin-left: auto
-  display: none
-  @media (max-width: 500px)
-    display: block
+  cursor: pointer
 
-  &,
-  img
-    width: 40px
-    height: 40px
+  display: block
+  width: 32px
+  height: 32px
+
+  @media (max-width: 500px)
+    width: 24px
+    height: 24px
+
+.stories-close svg
+  stroke: var(--color-text-lt)
+  @media (max-width: 500px)
+    width: 24px
+    height: 24px
 
 .story-img
+  will-change: transform
   position: relative
   width: mix(3)
-
-  @media (max-width: 500px)
-    width: calc(100vw - (4 * var(--unit)))
-
   &::before
     content: ''
     display: block
     width: 100%
-    padding-bottom: 177%
+    padding-bottom: 175.65%
     @media (max-width: 500px)
       padding-bottom: 160%
+
+  @media (max-width: 500px)
+    width: calc(100vw - (4 * var(--unit)))
 
 .story-img__i
   position: absolute
@@ -251,26 +219,55 @@ export default {
   object-fit: cover
 
 .swiper-slide
+  transition: transform 0.25s cubic-bezier(0.645, 0.045, 0.355, 1)
   width: auto
-  &:not(:last-child) .story-img
-    margin-right: gutters(1)
-    @media (max-width: 500px)
-      margin-left: calc(var(--unit) / 2)
-      margin-right: calc(var(--unit) / 2)
 
-  &::before
-    content: ''
+  @media (max-width: 500px)
+    transition: transform 0.2s ease
+
+  .story-img
+    margin-left: 1vw
+    margin-right: 1vw
+    @media (max-width: 500px)
+      margin-left: 0.27vw
+      margin-right: 0.27vw
+
+.swiper-slide:not(.swiper-slide-active)
+  transform: scale(0.89)
+  @media (max-width: 500px)
+    transform: scale(0.855)
+
+.swiper-slide-active
+  transform: scale(1)
+
+// Last slide url
+.swiper-slide--last
+  .story-img::before
+    background: #fff
+
+  a
+    border: 1px solid var(--color-text-lt)
+
     z-index: 1
     position: absolute
-    top: 0
-    left: 0
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
 
-    width: 100%
-    height: 100%
+    width: 99%
+    height: 99%
+    display: flex
+    align-items: center
+    justify-content: center
 
-    background: rgba(#fff, 0.9)
-    transition: 0.4s ease
+    span
+      transform: rotate(-180deg)
+      writing-mode: vertical-lr
+      @media (max-width: 1440px)
+        font-size: 12px
 
-.swiper-slide-active::before
-  opacity: 0
+    &.long-text span
+      font-size: 12px
+      @media (max-width: 1440px)
+        font-size: 11px
 </style>
