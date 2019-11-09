@@ -6,10 +6,10 @@
         v-for="(img, i) in content.images"
         :key="i + img.fields.file.url"
       >
-        <ImageDecode
+        <BaseImage
           v-if="isImage(img)"
           class="mobile-box__img"
-          :src="img.fields.file.url"
+          :img="img"
           :alt="img.fields.title"
           draggable="false"
         />
@@ -29,13 +29,13 @@
 </template>
 
 <script>
-import ImageDecode from '@/ImageDecode'
+import BaseImage from '@/BaseImage'
 import { isImage, isVideo } from '@/scripts/helpers'
 
 export default {
   name: 'CaseRow',
   components: {
-    ImageDecode
+    BaseImage
   },
   props: {
     content: Object

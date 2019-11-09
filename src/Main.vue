@@ -49,9 +49,9 @@
                   />
                 </video>
 
-                <img
+                <BaseImage
                   v-if="img.fields.type === 'image'"
-                  :src="img.fields.file.url"
+                  :img="img"
                   :alt="project.title"
                 />
               </div>
@@ -77,9 +77,9 @@
                   />
                 </video>
 
-                <img
+                <BaseImage
                   v-if="img.fields.type === 'image'"
-                  :src="img.fields.file.url"
+                  :img="img"
                   :alt="project.title"
                 />
               </div>
@@ -104,12 +104,15 @@ import { mapGetters } from 'vuex'
 
 import anime from 'animejs'
 import charming from 'charming'
+
 import Toggler from '@/Toggler'
+import BaseImage from '@/BaseImage'
 
 export default {
   name: 'Main',
   components: {
-    Toggler
+    Toggler,
+    BaseImage
   },
   props: {
     scroll: {

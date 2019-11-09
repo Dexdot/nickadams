@@ -9,9 +9,9 @@
         v-for="(img, i) in content.images"
         :key="i + img.fields.file.url"
       >
-        <ImageDecode
+        <BaseImage
           v-if="isImage(img)"
-          :src="img.fields.file.url"
+          :img="img"
           :alt="img.fields.title"
           draggable="false"
         />
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import ImageDecode from '@/ImageDecode'
+import BaseImage from '@/BaseImage'
 import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { isImage, isVideo } from '@/scripts/helpers'
@@ -38,7 +38,7 @@ import { isImage, isVideo } from '@/scripts/helpers'
 export default {
   name: 'WideSlider',
   components: {
-    ImageDecode,
+    BaseImage,
     swiper,
     swiperSlide
   },

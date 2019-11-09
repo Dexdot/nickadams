@@ -11,10 +11,10 @@
           class="case-box"
           :style="{ backgroundColor: content.color || '#DDDDDD' }"
         >
-          <ImageDecode
+          <BaseImage
             v-if="isImage(img)"
             class="case-row__img case-box__img"
-            :src="img.fields.file.url"
+            :img="img"
             :alt="img.fields.title"
             draggable="false"
           />
@@ -31,10 +31,10 @@
         </div>
 
         <template v-else>
-          <ImageDecode
+          <BaseImage
             v-if="isImage(img)"
             class="case-row__img"
-            :src="img.fields.file.url"
+            :img="img"
             :alt="img.fields.title"
             draggable="false"
           />
@@ -55,13 +55,13 @@
 </template>
 
 <script>
-import ImageDecode from '@/ImageDecode'
+import BaseImage from '@/BaseImage'
 import { isImage, isVideo } from '@/scripts/helpers'
 
 export default {
   name: 'CaseRow',
   components: {
-    ImageDecode
+    BaseImage
   },
   props: {
     content: Object

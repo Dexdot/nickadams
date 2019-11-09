@@ -5,11 +5,12 @@
       <p>{{ project.subtitle }}</p>
 
       <div class="case__cover">
-        <img
+        <BaseImage
           class="case__img"
-          :src="project.cover.fields.file.url"
-          :alt="project.cover.fields.title"
           draggable="false"
+          :img="project.cover"
+          :alt="project.cover.fields.title"
+          @complete="onBaseImageComplete"
         />
         <div
           class="case__preview"
@@ -67,13 +68,13 @@
           >
             <p v-if="isText(item)" v-html="render(item)"></p>
 
-            <ImageDecode
-              @complete="onImageDecodeComplete"
-              v-if="isImage(item)"
+            <BaseImage
               class="case__img"
-              :src="item.data.target.fields.file.url"
-              :alt="item.data.target.fields.title"
               draggable="false"
+              :img="item.data.target"
+              :alt="item.data.target.fields.title"
+              @complete="onBaseImageComplete"
+              v-if="isImage(item)"
             />
 
             <video
@@ -169,7 +170,7 @@ import CaseRow from '@/CaseRow'
 import CaseBox from '@/CaseBox'
 import MobileBox from '@/MobileBox'
 import WideSlider from '@/WideSlider'
-import ImageDecode from '@/ImageDecode'
+import BaseImage from '@/BaseImage'
 
 import loop from '@/scripts/loop'
 import { fetchCase } from '@/scripts/api'
@@ -186,7 +187,7 @@ export default {
     CaseBox,
     MobileBox,
     WideSlider,
-    ImageDecode
+    BaseImage
   },
   data: () => ({
     project: null,
@@ -291,7 +292,7 @@ export default {
         this.observer.observe(el)
       })
     },
-    onImageDecodeComplete(img) {
+    onBaseImageComplete(img) {
       this.observer.observe(img)
     },
     startPreviews() {

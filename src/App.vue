@@ -123,16 +123,6 @@ export default {
     // Start Inobounce
     inobounce.enable()
   },
-  destroyed() {
-    window.removeEventListener('resize', this.getWinHeight.bind(this))
-
-    if (isSafari()) {
-      window.removeEventListener('scroll', this.scrollSafari.bind(this))
-    } else {
-      this.vs.off(this.onScroll)
-      loop.remove('checkSmooth')
-    }
-  },
   methods: {
     getTranslate() {
       return isSafari() ? this.scroll : this.translate
