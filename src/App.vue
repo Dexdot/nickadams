@@ -157,7 +157,8 @@ export default {
       this.isStoriesActive = true
     },
     onScroll({ deltaY }) {
-      if (this.disableScroll) return false
+      const innerHeight = this.$refs.inner.scrollHeight
+      if (this.disableScroll || innerHeight === this.winHeight) return false
 
       if (!this.isMenuActive && !this.isCreditsActive) {
         clearTimeout(timer)
@@ -169,7 +170,8 @@ export default {
 
       this.scroll = Math.min(
         Math.max(scroll, 0),
-        this.$refs.inner.getBoundingClientRect().height - this.winHeight
+        innerHeight - this.winHeight
+        // this.$refs.inner.getBoundingClientRect().height - this.winHeight
       )
     },
     checkSmooth() {

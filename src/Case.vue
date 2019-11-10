@@ -106,19 +106,22 @@
       </section>
 
       <ul class="case__footer">
-        <li class="u-flex">
+        <li class="u-flex" v-if="project.team && project.team.content.length > 0">
           <div class="case__footer-col">
-            <b>Team</b>
+            <b>Команда</b>
           </div>
           <div class="case__footer-col">
-            <ul>
-              <li v-for="(item, i) in project.team" :key="i + project.slug">
-                {{ item }}
+            <ul class="case__team">
+              <li
+                v-for="(item, i) in project.team.content"
+                :key="i + item.nodeType"
+              >
+                <p v-if="isText(item)" v-html="render(item)"></p>
               </li>
             </ul>
           </div>
         </li>
-        <li class="u-flex">
+        <li class="u-flex" v-if="project.contentAuthors">
           <div class="case__footer-col">
             <b>Content</b>
           </div>
@@ -133,7 +136,7 @@
             </ul>
           </div>
         </li>
-        <li class="u-flex">
+        <li class="u-flex" v-if="project.etalon">
           <div class="case__footer-col">
             <b>Etalon</b>
           </div>
@@ -367,10 +370,6 @@ export default {
   line-height: 1
   margin-bottom: 0.65em
 
-// Team list
-.case__team
-  float: left
-
 // Content
 .case >
   h1, p
@@ -437,9 +436,21 @@ export default {
 .case p
   margin-bottom: 24px
 
+.case__team li:not(:first-child) /deep/ b
+  display: block
+  margin-top: 16px
+.case__team p
+  margin-bottom: 0
+
 // Cover
 .case__cover
   position: relative
+
+.case__cover .case__img:not(video)
+  @media (max-width: 700px)
+    object-fit: cover
+    height: 100vh
+
 
 // Preview
 .case__preview
