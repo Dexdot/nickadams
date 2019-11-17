@@ -15,11 +15,7 @@
     />
 
     <div class="scroll-container" ref="container">
-      <div
-        class="scroll-inner"
-        ref="inner"
-        :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
-      >
+      <div class="scroll-inner" ref="inner" :style="scrollStyle">
         <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
           <router-view
             :key="$route.path"
@@ -40,14 +36,13 @@
 
 <script>
 import VirtualScroll from 'virtual-scroll'
-import inobounce from 'inobounce'
 import Header from '@/Header'
 import Menu from '@/Menu'
 import Credits from '@/Credits'
 import Stories from '@/Stories'
 
 import loop from '@/scripts/loop'
-import { isSafari, isMACOS } from '@/scripts/detect'
+import { isMobileDevice, isSafari, isMACOS } from '@/scripts/detect'
 
 import transitions from '@/transitions/'
 
@@ -70,6 +65,11 @@ export default {
     Stories
   },
   computed: {
+    scrollStyle() {
+      return isSafari() || isMobileDevice()
+        ? {}
+        : { transform: `translate3d(0, -${this.translate}px, 0)` }
+    },
     disableScroll() {
       return this.isMenuActive || this.isCreditsActive || this.isStoriesActive
     }
@@ -96,6 +96,9 @@ export default {
     if (isSafari()) {
       document.querySelector('body').classList.add('is-safari')
     }
+    if (isMobileDevice()) {
+      document.querySelector('body').classList.add('is-mob')
+    }
 
     // Window height
     this.getWinHeight()
@@ -112,20 +115,17 @@ export default {
       passive: true
     })
 
-    if (isSafari()) {
+    if (isSafari() || isMobileDevice()) {
       window.addEventListener('scroll', this.scrollSafari.bind(this))
       this.checkScrollStop()
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
     }
-
-    // Start Inobounce
-    inobounce.enable()
   },
   methods: {
     getTranslate() {
-      return isSafari() ? this.scroll : this.translate
+      return isSafari() || isMobileDevice() ? this.scroll : this.translate
     },
     getWinHeight() {
       this.winHeight = window.innerHeight
@@ -201,10 +201,10 @@ export default {
         }
       }
     },
-    scrollSafari({ deltaY }) {
+    scrollSafari(e) {
       if (this.disableScroll) return false
 
-      this.deltaY = deltaY
+      this.deltaY = e.deltaY
       this.scroll = window.pageYOffset
     },
     checkScrollStop() {
@@ -267,9 +267,12 @@ export default {
 body.is-macos:not(.is-safari)
   overflow: hidden
 
-.is-safari .scroll-container
-  height: auto !important
-  overflow: unset !important
+.is-mob,
+.is-safari
+  .scroll-container
+    width: auto !important
+    height: auto !important
+    overflow: unset !important
 </style>
 
 <style lang="sass" scoped>
@@ -304,8 +307,6 @@ body.is-macos:not(.is-safari)
 
 .scroll-container
   width: 100vw
-
-.scroll-container
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden

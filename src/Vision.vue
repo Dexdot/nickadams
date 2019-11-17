@@ -14,19 +14,6 @@
         <span>{{ activeSlide + 1 }} / {{ slides.length }}</span>
       </div>
     </section>
-
-    <!-- <Next class="vision-next" to="/black" :pageDark="false">
-      <span slot="title">Black</span>
-      <span slot="text"
-        >Jamie then returned home to set up his own product
-      </span>
-    </Next> -->
-
-    <!-- <CreditsButton
-      class="about-credits"
-      @credits-click="$emit('credits-click')"
-      :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
-    /> -->
   </main>
 </template>
 

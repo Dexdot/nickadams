@@ -106,7 +106,10 @@
       </section>
 
       <ul class="case__footer">
-        <li class="u-flex" v-if="project.team && project.team.content.length > 0">
+        <li
+          class="u-flex"
+          v-if="project.team && project.team.content.length > 0"
+        >
           <div class="case__footer-col">
             <b>Команда</b>
           </div>
@@ -436,9 +439,13 @@ export default {
 .case p
   margin-bottom: 24px
 
+.case__team /deep/ b
+  +tt(m)
+
 .case__team li:not(:first-child) /deep/ b
   display: block
   margin-top: 16px
+
 .case__team p
   margin-bottom: 0
 

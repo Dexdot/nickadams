@@ -7,8 +7,8 @@
       ref="title"
     ></h1>
     <h1
-      v-show="!isNextVisible"
       v-else
+      v-show="!isNextVisible"
       :class="['main-title-mob', 't-h1', { soon: isSoon }]"
       :style="{ transform: `translate3d(-50%, ${this.scroll}px, 0)` }"
       ref="title-mob"
@@ -93,7 +93,7 @@
       <Toggler
         :isNotScrolling="isNotScrolling"
         :isDark="isDark"
-        :style="{ transform: `translate3d(0, ${this.scroll}px, 0)` }"
+        :style="scrollStyle"
       />
     </router-link>
   </main>
@@ -107,6 +107,7 @@ import charming from 'charming'
 
 import Toggler from '@/Toggler'
 import BaseImage from '@/BaseImage'
+import { isMobileDevice, isSafari } from '@/scripts/detect'
 
 export default {
   name: 'Main',
@@ -146,7 +147,12 @@ export default {
     cases() {
       return this.isDark ? this.blackCases : this.mainCases
     },
-    isDesktop: () => window.innerWidth > 500
+    isDesktop: () => window.innerWidth > 500,
+    scrollStyle() {
+      return isSafari() || isMobileDevice()
+        ? {}
+        : { transform: `translate3d(0, ${this.scroll}px, 0)` }
+    }
   },
   mounted() {
     this.observeCases()
@@ -377,6 +383,11 @@ $mob-mb: 28%
     max-width: 100%
     width: auto
     display: block
+
+.is-mob .main-title-mob,
+.is-safari .main-title
+  margin-top: 0
+  transform: translate(-50%, -50%) !important
 
 
 .img

@@ -305,11 +305,11 @@ export default {
 .about__img
   position: relative
   width: column-spans(3)
-  padding-bottom: 146.37%
+  padding-bottom: 177.77%
 
   @media (max-width: 800px)
     width: 58.6vw
-    padding-bottom: 103%
+    padding-bottom: 118%
 
 .about__img video,
 .about__img img
@@ -369,6 +369,11 @@ export default {
   margin-top: 24px
   width: 182px
   height: auto
+
+.is-mob,
+.is-safari
+  .about-credits
+    transform: unset !important
 
 
 // HOVER
