@@ -201,10 +201,10 @@ export default {
         }
       }
     },
-    scrollSafari(e) {
+    scrollSafari() {
       if (this.disableScroll) return false
 
-      this.deltaY = e.deltaY
+      this.deltaY = window.pageYOffset < this.scroll ? 1 : -1
       this.scroll = window.pageYOffset
     },
     checkScrollStop() {

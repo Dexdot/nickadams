@@ -176,6 +176,7 @@ export default {
               dir === 'down'
                 ? entry.target.getBoundingClientRect().top >= innerHeight / 2
                 : entry.target.getBoundingClientRect().top <= innerHeight / 2.5
+
             if (entry.intersectionRatio >= 0.8 && scrollCondition) {
               if (window.innerWidth <= 500)
                 this.isSoon = entry.target.classList.contains('case--soon')

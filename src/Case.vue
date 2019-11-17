@@ -111,7 +111,7 @@
           v-if="project.team && project.team.content.length > 0"
         >
           <div class="case__footer-col">
-            <b>Команда</b>
+            <b>Team</b>
           </div>
           <div class="case__footer-col">
             <ul class="case__team">
