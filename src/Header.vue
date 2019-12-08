@@ -30,7 +30,7 @@ export default {
 @import "~@/sass/utils"
 
 .header
-  z-index: 2
+  z-index: 3
   position: fixed
   top: 6%
   left: 0

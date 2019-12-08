@@ -107,7 +107,7 @@ export default {
     transition: 0.4s ease (#{$i*0.05s})
 
 .credits
-  z-index: 1
+  z-index: 2
   position: fixed
   top: 0
   left: 0

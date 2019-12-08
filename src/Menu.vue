@@ -141,7 +141,7 @@ export default {
     transition: 0.4s ease 0.1s
 
 .menu
-  z-index: 1
+  z-index: 2
   position: fixed
   top: 0
   left: 0
