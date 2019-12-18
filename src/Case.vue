@@ -35,7 +35,8 @@
         <aside ref="aside">
           <ul>
             <li>
-              <b>Client</b>
+              <!-- <b>Client</b> -->
+              <b>{{ project.clientLabel || 'Client' }}</b>
               <p>{{ project.client }}</p>
             </li>
             <li>
