@@ -25,7 +25,8 @@ const handleCases = fields => {
 }
 
 export const fetchCases = ctx => {
-  client.getEntries({ include: 2 }).then(response => {
+  // client.getEntries({ include: 2 }).then(response => {
+  client.getEntries().then(response => {
     response.items.forEach(v => {
       // Cases BLACK
       if (v.fields.name === 'black') {

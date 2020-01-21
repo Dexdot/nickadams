@@ -27,10 +27,20 @@
       <swiper v-if="project" :options="swiperOptions" ref="swiper">
         <swiper-slide v-for="(story, i) in project.list" :key="story.sys.id">
           <div class="story-img" @click="onSlideClick($event, i)">
-            <img
-              :src="story.fields.file.url"
-              :alt="story.fields.title"
+            <BaseImage
               class="story-img__i"
+              v-if="isImage(story)"
+              :img="story"
+              :alt="story.fields.title"
+            />
+            <video
+              v-if="isVideo(story)"
+              class="story-img__i"
+              :src="story.fields.file.url"
+              playsinline
+              autoplay
+              muted
+              loop
             />
           </div>
         </swiper-slide>
@@ -64,14 +74,17 @@
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
+import BaseImage from '@/BaseImage'
 
 import { isTouchDevice } from '@/scripts/detect'
+import { isImage, isVideo } from '@/scripts/helpers'
 
 export default {
   name: 'Stories',
   components: {
     swiper,
-    swiperSlide
+    swiperSlide,
+    BaseImage
   },
   props: {
     active: {
@@ -104,6 +117,8 @@ export default {
     this.$refs.swiper.swiper.destroy(true, false)
   },
   methods: {
+    isImage,
+    isVideo,
     onSlideClick(e, i) {
       const { swiper } = this.$refs.swiper
       const isLast = i === this.project.list.length && i === swiper.activeIndex

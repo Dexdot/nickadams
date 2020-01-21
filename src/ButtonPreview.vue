@@ -7,10 +7,20 @@
       :key="i + item.fields.file.url"
     >
       <button class="preview-btn">
-        <img
+        <BaseImage
+          class="preview-btn"
+          v-if="isImage(item)"
+          :img="item"
+          :alt="item.fields.title"
+        />
+        <video
+          v-if="isVideo(item)"
           class="preview-btn"
           :src="item.fields.file.url"
-          :alt="item.fields.title"
+          playsinline
+          autoplay
+          muted
+          loop
         />
         <img
           class="preview-play"
@@ -23,8 +33,14 @@
 </template>
 
 <script>
+import BaseImage from '@/BaseImage'
+import { isImage, isVideo } from '@/scripts/helpers'
+
 export default {
   name: 'ButtonPreview',
+  components: {
+    BaseImage
+  },
   props: {
     large: Boolean,
     list: Array
@@ -37,6 +53,8 @@ export default {
     this.notEmptyList = this.list && this.list.length > 1
   },
   methods: {
+    isImage,
+    isVideo,
     start() {
       if (!this.notEmptyList) return false
 
@@ -85,6 +103,7 @@ export default {
   width: 54px
   height: 54px
   border-radius: 50%
+  object-fit: cover
 
 .previews-li--large
   border: 3px solid $purple
