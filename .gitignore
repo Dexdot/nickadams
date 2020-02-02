@@ -3,6 +3,7 @@ node_modules
 /dist
 
 now.json
+old.now.json
 
 # local env files
 .env
